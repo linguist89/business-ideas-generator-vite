@@ -1,0 +1,17 @@
+.or-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.or-line hr {
+  flex-grow: 1;
+  height: 0;
+  border: 0;
+  border-top: 1px solid black;
+}
+
+.or-line span {
+  margin: 0 1rem;
+  font-weight: bold;
+}

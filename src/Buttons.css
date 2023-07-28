@@ -1,0 +1,204 @@
+.transparent-button {
+    display: inline-block;
+    border: 1px solid #ffffff;
+    border-radius: 0.4rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: transparent;
+    color: #ffffff;
+  }
+  
+  .transparent-button:hover {
+    background-color: #153c49;
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+  
+  .transparent-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(41, 26, 62, 0.5);
+  }
+  
+  .transparent-button:active {
+    background-color: #153c49;
+  }
+  
+  .transparent-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .transparent-button:focus:not(:focus-visible) {
+    box-shadow: none;
+  }
+  
+  .solid-button {
+    display: inline-block;
+    border: 1px solid #ffffff;
+    border-radius: 0.4rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: #ffffff;
+    color: #1F5668;
+  }
+  
+  .solid-button:hover {
+    background-color: #dad7d7;
+    border-color: #dad7d7;
+    color: #1F5668;
+  }
+  
+  .solid-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(41, 26, 62, 0.5);
+  }
+  
+  .solid-button:active {
+    background-color: #153c49;
+    color: #ffffff;
+  }
+  
+  .solid-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .solid-button:focus:not(:focus-visible) {
+    box-shadow: none;
+  }
+  .solid-card-button {
+    display: inline-block;
+    border: 1px solid #ffffff;
+    border-radius: 0.4rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: #0e7490;
+    color: #ffffff;
+  }
+  
+  .solid-card-button:hover {
+    background-color: #153c49;
+    border-color: #153c49;
+    color: #ffffff;
+  }
+  
+  .solid-card-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(41, 26, 62, 0.5);
+  }
+  
+  .solid-card-button:active {
+    background-color: #153c49;
+  }
+  
+  .solid-card-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .solid-card-button:focus:not(:focus-visible) {
+    box-shadow: none;
+  }
+  
+  .transparent-green-button {
+    display: inline-block;
+    border: 1px solid #1F5668;
+    border-radius: 0.4rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: transparent;
+    color: #1F5668;
+  }
+  
+  .transparent-green-button:hover {
+    background-color: transparent;
+    border-color: #1F5668;
+    color: #1F5668;
+  }
+  
+  .transparent-green-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(128, 0, 128, 0.5);
+  }
+  
+  .transparent-green-button:active {
+    background-color: transparent;
+  }
+  
+  .transparent-green-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .transparent-green-button:focus:not(:focus-visible) {
+    box-shadow: none;
+  }
+  
+  .transparent-black-button {
+    display: inline-block;
+    border: 1px solid #000000;
+    border-radius: 0.4rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: transparent;
+    color: #000000;
+  }
+  
+  .transparent-black-button:hover {
+    background-color: transparent;
+    border-color: #000000;
+    color: #000000;
+  }
+  
+  .transparent-black-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px #000000;
+  }
+  
+  .transparent-black-button:active {
+    background-color: transparent;
+  }
+  
+  .transparent-black-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .transparent-black-button:focus:not(:focus-visible) {
+    box-shadow: none;
+  }
+
+  .button-top-padding{
+    margin-top: 0.5rem;
+  }
+  

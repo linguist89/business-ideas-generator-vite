@@ -1,0 +1,84 @@
+.BuyCreditsDialog button,
+.BuyCreditsDialog fieldset,
+.BuyCreditsDialog input {
+  all: unset;
+}
+
+.BuyCreditsDialogOverlay {
+  background-color: #00000099;
+  position: fixed;
+  inset: 0;
+  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.BuyCreditsDialogContent {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 0.4rem;
+  box-shadow: #094C5F 0px 10px 38px -10px, #094C5F 0px 10px 20px -15px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  max-width: 65vw;
+  max-height: 85vh;
+  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 2rem;
+  z-index: 2;
+}
+
+.CreditsControl {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  align-items: center;
+}
+
+.credit-button {
+  background: #0E7490;
+  color: #FFFFFF;
+  border-radius: 5px;
+  margin: 0 1rem;
+  padding: 1rem;
+}
+
+.BuyCreditsDialogTitle{
+  font-size: 2rem;
+  font-weight: bold;
+  padding-bottom: 2rem;
+}
+
+@keyframes overlayShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .BuyCreditsDialogContent {
+    width: 98%;
+    max-width: 98%;
+    padding: 1rem;
+  }
+
+  .BuyCreditsDialogTitle {
+    font-size: 1.5rem;
+    padding-bottom: 1rem;
+  }
+}

@@ -1,0 +1,132 @@
+.login-heading{
+  font-size: 2rem;
+  text-align: center;
+  padding-bottom: 1rem;
+  color: #0E7490;
+}
+.LoginDialogOverlay {
+  background-color: #00000099;
+  position: fixed;
+  inset: 0;
+  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.LoginDialogContent {
+  background-color: #FFFFFF;
+  border-radius: 0.4rem;
+  box-shadow: 0px 10px 38px -10px #094C5F, 0px 10px 20px -15px #094C5F;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  padding: 3rem;
+  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+};
+
+
+.LoginDialogContent:focus {
+  outline: none;
+}
+
+.LoginDialogTitle {
+  margin: 0;
+  font-weight: 500;
+  color: #094C5F;
+  font-size: 1.5rem;
+}
+
+.LoginDialogDescription {
+  margin: 10px 0 20px;
+  color: #094C5F;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.IconButton {
+  font-family: inherit;
+  border-radius: 0.4rem;
+  height: 25px;
+  width: 25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #0E7490;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.IconButton:hover {
+  background-color: #094C5F;
+  color: #FFFFFF;
+}
+.IconButton:focus {
+  box-shadow: 0 0 0 2px #0E7490;
+}
+
+.Fieldset {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.Label {
+  font-size: 15px;
+  color: #0E7490;
+  text-align: right;
+}
+
+.Input {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  padding: 0.6rem;
+  font-size: 0.8rem;
+  line-height: 1;
+  color: #0E7490;
+  box-shadow: 0 0 0 1px #094C5F;
+  border-radius: 0.4rem;
+}
+
+@keyframes overlayShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.social-logins{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 1rem;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #0E7490;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}

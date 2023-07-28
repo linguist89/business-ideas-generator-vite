@@ -1,0 +1,48 @@
+.header {
+    position: relative;
+}
+  
+.header img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: auto;  /* adjust as per requirement */
+    height: auto; /* adjust as per requirement */
+}
+
+.text-block {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 20px;
+    color: white;
+    border-radius: 10px;
+}
+  
+.text-block h1,
+.text-block h2 {
+    color: white;
+    text-align: center;
+}
+
+@media (max-width: 480px) {
+    h1 {
+      font-size: 16px;
+    }
+    
+    .hide-on-mobile {
+      display: none;
+    }
+}
+
+@media (min-width: 1200px) {
+    h1 {
+      font-size: 38.4px;
+    }
+    
+    h2 {
+      font-size: 24px;
+    }
+}

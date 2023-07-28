@@ -1,0 +1,15 @@
+#textarea {
+    width: 100%;
+    /* or any specific width you want */
+}
+
+.custom-label {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.custom-label,
+.custom-textarea {
+    width: 100%;
+    justify-content: center;
+}

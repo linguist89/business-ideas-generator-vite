@@ -1,0 +1,139 @@
+.PDFButton{
+    display: flex;
+    gap: 0.5rem;
+}
+
+.AccordionMenuWrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.MoreInfoWrapper{
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    align-items: center;
+}
+
+.DownloadButtonWrapper{
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 1rem;
+}
+
+.ResultsTable {
+    width: 100%;
+    font-size: 1rem;
+    max-width: 1920px;
+    margin: 0 auto;
+    margin-top: 2rem;
+}
+
+.ResultsTable table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    border-radius: 0.4rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 0.4rem;
+}
+
+.ResultsTable th, .ResultsTable td {
+    font-weight: normal;
+    text-align: left;
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+.ResultsTable th {
+    font-weight: bold;
+    background-color: #0e7490; 
+    color: white;
+}
+
+.ResultsTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Remove outer borders */
+.ResultsTable tr:first-child th {
+    border-top: none;
+}
+
+.ResultsTable tr:last-child td {
+    border-bottom: none;
+}
+
+.ResultsTable th:first-child, .ResultsTable td:first-child {
+    border-left: none;
+}
+
+.ResultsTable th:last-child, .ResultsTable td:last-child {
+    border-right: none;
+}
+
+.ResultsTable td:first-child, .ResultsTable th:first-child {
+    font-weight: bold;
+}
+
+/* Responsive layout for small screens */
+@media only screen and (max-width: 768px) {
+
+    .AccordionMenuWrapper {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .MoreInfoWrapper{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .ResultsTable table, .ResultsTable thead, .ResultsTable tbody, .ResultsTable th, .ResultsTable td, .ResultsTable tr { 
+        display: block; 
+    }
+
+    .ResultsTable thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .ResultsTable td { 
+        /* Keep the border, but remove the left and right ones */
+        border-top: 1px solid #ddd; 
+        border-bottom: 1px solid #ddd; 
+        border-left: none;
+        border-right: none;
+        position: relative;
+        padding-left: 0%; 
+        text-align: left;
+    }
+
+    .ResultsTable td:before { 
+        position: relative;
+        left: 0;
+        display: block;
+        width: 100%; 
+        padding: 0;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+        padding-bottom: 5px;
+    }
+
+    .ResultsTable td:nth-of-type(1):before { content: "Product"; }
+    .ResultsTable td:nth-of-type(2):before { content: "Description"; }
+    .ResultsTable td:nth-of-type(3):before { content: "Potential Clients"; }
+    .ResultsTable td:nth-of-type(4):before { content: "Where to Find Clients"; }
+    .ResultsTable td:nth-of-type(5):before { content: "Get more info"; }
+
+    /* No border for the first 'td' in the responsive view to avoid double border at the top */
+    .ResultsTable tr:first-child td {
+        border-top: none;
+    }
+}
+
