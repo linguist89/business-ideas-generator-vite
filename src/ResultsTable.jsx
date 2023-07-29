@@ -14,11 +14,8 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "./Firebase.jsx";
 import PdfIcon from "./assets/images/PdfIcon.svg?component";
 import { CreditContext } from "./App";
-
-import * as pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from "pdfmake/build/vfs_fonts";
-pdfMake.vfs =
-  pdfFonts && pdfFonts.pdfMake ? pdfFonts.pdfMake.vfs : globalThis.pdfMake.vfs;
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function sanitizeTitle(title) {
   const sanitizedTitle = title.replace(/[^a-zA-Z]/g, "_");
@@ -150,79 +147,52 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
       const sanitizedTitle = sanitizeTitle(product.product);
       const filename = `${sanitizedTitle}.pdf`;
 
-      const docDefinition = {
-        pageSize: "A4",
-        content: [
-          {
-            text: product.product,
-            style: "header",
-            alignment: "center",
-          },
-          "\n",
-          {
-            stack: [
-              { text: `Product:\n ${product.product}`, style: "subheader" },
-              { text: `Description:\n ${product.description}\n\n` },
-              { text: `Potential Clients:\n ${product.potentialClients}\n\n` },
-              {
-                text: `Where to find the clients:\n ${product.whereToFindClients}\n\n`,
-              },
-              {
-                text: `Creating the product:\n ${product["Creating the product"]}\n\n`,
-              },
-              {
-                text: `Finding customers:\n ${product["Finding customers"]}\n\n`,
-              },
-              { text: `Selling product:\n ${product["Selling product"]}\n\n` },
-              {
-                text: `Consumer Pain Point:\n ${product["Consumer Pain Point"]
-                  .map((obj) => obj.point)
-                  .join("\n")}\n\n`,
-              },
-              {
-                text: `Effort:\n ${product["Effort"]
-                  .map((obj) => obj.point)
-                  .join("\n")}\n\n`,
-              },
-              {
-                text: `Time:\n ${product["Time"]
-                  .map((obj) => Object.values(obj)[0])
-                  .join("\n")}\n\n`,
-              },
-            ],
-            margin: [20, 20, 20, 20],
-          },
-        ],
-        styles: {
-          header: {
-            fontSize: 18,
-            bold: true,
-            margin: [0, 0, 0, 10],
-          },
-          subheader: {
-            fontSize: 16,
-            bold: true,
-            margin: [0, 10, 0, 5],
-          },
-        },
-        header: function (currentPage, pageCount) {
-          return [
-            {
-              image: logoBase64,
-              width: 50,
-              alignment: "left",
-              margin: [10, 10, 0, 0],
-            },
-            {
-              text: `Page ${currentPage} of ${pageCount}`,
-              alignment: "right",
-              margin: [0, 30, 10, 0],
-            },
-          ];
-        },
-      };
+      const doc = new jsPDF();
 
-      await pdfMake.createPdf(docDefinition).download(filename);
+      // Add title
+      doc.setFontSize(22);
+      doc.text(product.product, 10, 10);
+
+      // Add content
+      doc.setFontSize(16);
+      doc.text(`Product: ${product.product}`, 10, 30);
+      doc.text(`Description: ${product.description}`, 10, 40);
+      doc.text(`Potential Clients: ${product.potentialClients}`, 10, 50);
+      doc.text(
+        `Where to find the clients: ${product.whereToFindClients}`,
+        10,
+        60
+      );
+      doc.text(
+        `Creating the product: ${product["Creating the product"]}`,
+        10,
+        70
+      );
+      doc.text(`Finding customers: ${product["Finding customers"]}`, 10, 80);
+      doc.text(`Selling product: ${product["Selling product"]}`, 10, 90);
+      doc.text(
+        `Consumer Pain Point: ${product["Consumer Pain Point"]
+          .map((obj) => obj.point)
+          .join("\n")}`,
+        10,
+        100
+      );
+      doc.text(
+        `Effort: ${product["Effort"].map((obj) => obj.point).join("\n")}`,
+        10,
+        110
+      );
+      doc.text(
+        `Time: ${product["Time"]
+          .map((obj) => Object.values(obj)[0])
+          .join("\n")}`,
+        10,
+        120
+      );
+
+      // You can adjust the positions as per your requirement
+
+      doc.save(filename);
       setCreatingPdf(false);
     }
   }
@@ -231,85 +201,42 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
     if (!user) {
       setShowLoginDialog(true);
     } else {
-      setCreatingPdf(true);
+      const doc = new jsPDF();
 
-      const sanitizedTitle = sanitizeTitle(title);
-      const filename = `${sanitizedTitle}.pdf`;
-
-      const docDefinition = {
-        pageSize: "A4",
-        content: [
-          {
-            text: title,
-            style: "header",
-            alignment: "center",
-          },
-          "\n",
-          ...products.map((product, index) => ({
-            stack: [
-              { text: `Product:\n ${product.product}`, style: "subheader" },
-              { text: `Description:\n ${product.description}\n\n` },
-              { text: `Potential Clients:\n ${product.potentialClients}\n\n` },
-              {
-                text: `Where to find the clients:\n ${product.whereToFindClients}\n\n`,
-              },
-              {
-                text: `Creating the product:\n ${product["Creating the product"]}\n\n`,
-              },
-              {
-                text: `Finding customers:\n ${product["Finding customers"]}\n\n`,
-              },
-              { text: `Selling product:\n ${product["Selling product"]}\n\n` },
-              {
-                text: `Consumer Pain Point:\n ${product["Consumer Pain Point"]
-                  .map((obj) => obj.point)
-                  .join("\n")}\n\n`,
-              },
-              {
-                text: `Effort:\n ${product["Effort"]
-                  .map((obj) => obj.point)
-                  .join("\n")}\n\n`,
-              },
-              {
-                text: `Time:\n ${product["Time"]
-                  .map((obj) => Object.values(obj)[0])
-                  .join("\n")}\n\n`,
-              },
-            ],
-            margin: [20, 20, 20, 20],
-          })),
+      let headers = [
+        [
+          "Product",
+          "Description",
+          "Potential Clients",
+          "Where to find the clients",
         ],
-        styles: {
-          header: {
-            fontSize: 18,
-            bold: true,
-            margin: [0, 0, 0, 10],
-          },
-          subheader: {
-            fontSize: 16,
-            bold: true,
-            margin: [0, 10, 0, 5],
-          },
-        },
-        header: function (currentPage, pageCount) {
-          return [
-            {
-              image: logoBase64,
-              width: 50,
-              alignment: "left",
-              margin: [10, 10, 0, 0],
-            },
-            {
-              text: `Page ${currentPage} of ${pageCount}`,
-              alignment: "right",
-              margin: [0, 30, 10, 0],
-            },
-          ];
-        },
-      };
+      ];
 
-      await pdfMake.createPdf(docDefinition).download(filename);
-      setCreatingPdf(false);
+      let data = products.map((product) => [
+        product.product,
+        product.description,
+        product.potentialClients,
+        product.whereToFindClients,
+      ]);
+
+      doc.setFontSize(22);
+      doc.text(title, 10, 10);
+      doc.setFontSize(16);
+
+      autoTable(doc, {
+        startY: 30, // start after the title
+        head: headers,
+        body: data,
+        styles: { fillColor: [255, 255, 255], textColor: 20, fontSize: 10 },
+        columnStyles: {
+          0: { cellWidth: 40 },
+          1: { cellWidth: 50 },
+          2: { cellWidth: 50 },
+          3: { cellWidth: 50 },
+        }, // Adjust cellWidths as needed
+      });
+
+      doc.save(`${title}.pdf`);
     }
   }
 
