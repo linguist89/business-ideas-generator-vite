@@ -5,11 +5,11 @@ import { splitVendorChunkPlugin } from 'vite'
 export default defineConfig({
   plugins: [react(), splitVendorChunkPlugin()],
   build: {
+    chunkSizeWarningLimit: 1500, // size in kBs, increase as needed
     rollupOptions: {
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            // all node_modules are put into a "vendor" chunk
             return 'vendor'
           }
         },
@@ -17,3 +17,4 @@ export default defineConfig({
     },
   },
 })
+
