@@ -19,17 +19,14 @@ export default function PricingDialog({ purchaseTypeFilter, title }) {
 
   async function fetchPaymentCheckout(priceId, mode) {
     // Create PaymentIntent as soon as the page loads
-    fetch(
-      "http://127.0.0.1:5001/home-page-authentication/us-central1/createCheckoutSession",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          priceId: priceId,
-          mode: mode,
-        }),
-      }
-    )
+    fetch("https://createcheckoutsession-e3gzrcyznq-ey.a.run.app", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        priceId: priceId,
+        mode: mode,
+      }),
+    })
       .then((res) => {
         if (!res.ok && res.status !== 303) {
           throw new Error(`Server responded with a status of ${res.status}`);
