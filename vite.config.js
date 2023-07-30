@@ -4,9 +4,12 @@ import { visualizer } from 'rollup-plugin-visualizer'
 
 // This is used to group dependencies by package
 function packageName(id) {
-  let match = id.match(/([^\/\\]+)\/?$/)
-  if (match) return match[1]
-  return id
+  // match the package name from the path
+  // this regex handles scoped packages and nested node_modules (e.g., node_modules/package/node_modules/another-package)
+  let match = id.match(/[\\/]node_modules[\\/](?:(@[^\\/]+[\\/])?[^\\/]+)/);
+
+  // the package name is the second group in the match array
+  return match ? match[1] || match[2] : '';
 }
 
 export default defineConfig({
