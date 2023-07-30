@@ -2,7 +2,6 @@
 const { logger } = require("firebase-functions");
 const { onRequest } = require("firebase-functions/v2/https");
 const { onDocumentCreated } = require("firebase-functions/v2/firestore");
-require('dotenv').config();
 
 // The Firebase Admin SDK to access Firestore.
 const { initializeApp } = require("firebase-admin/app");
@@ -12,11 +11,10 @@ initializeApp();
 
 const functions = require('firebase-functions');
 const stripe = require('stripe')(process.env.VITE_REACT_APP_STRIPE_SECRET_KEY);
-//const stripe = require('stripe')("sk_test_51NXCIeCr38bAPvsigkurAhFFufPBFaHChdiAGawyIpeJCiTHOAZ57L3RppVHIv4eoT2wg5WF27vjbSSfKBgtP6g100zcGknJu3");
 const cors = require('cors')({ origin: true });
 
 
-const YOUR_DOMAIN = 'http://localhost:5173';
+const YOUR_DOMAIN = 'https://business-ideas.spsdigitaltech.com/';
 
 exports.createCheckoutSession = onRequest(async (req, res) => {
     cors(req, res, async () => {
@@ -48,10 +46,13 @@ exports.createCheckoutSession = onRequest(async (req, res) => {
 });
 
 exports.addmessage = onRequest(async (req, res) => {
+    // Grab the text parameter.
     const original = req.query.text;
+    // Push the new message into Firestore using the Firebase Admin SDK.
     const writeResult = await getFirestore()
         .collection("messages")
         .add({ original: original });
+    // Send back a message that we've successfully written the message
     res.json({ result: `Message with ID: ${writeResult.id} added.` });
 });
 
