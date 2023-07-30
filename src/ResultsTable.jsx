@@ -14,8 +14,6 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "./Firebase.jsx";
 import PdfIcon from "./assets/images/PdfIcon.svg?component";
 import { CreditContext } from "./App";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 
 function sanitizeTitle(title) {
   const sanitizedTitle = title.replace(/[^a-zA-Z]/g, "_");
@@ -142,7 +140,8 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
     if (!user) {
       setShowLoginDialog(true);
     } else {
-      setCreatingPdf(true);
+      alert("PDF downlaod TODO");
+      /*setCreatingPdf(true);
 
       const sanitizedTitle = sanitizeTitle(product.product);
       const filename = `${sanitizedTitle}.pdf`;
@@ -193,7 +192,7 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
       // You can adjust the positions as per your requirement
 
       doc.save(filename);
-      setCreatingPdf(false);
+      setCreatingPdf(false);*/
     }
   }
 
@@ -201,6 +200,8 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
     if (!user) {
       setShowLoginDialog(true);
     } else {
+      alert("PDF download TODO");
+      /*
       const doc = new jsPDF();
 
       let headers = [
@@ -236,7 +237,7 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
         }, // Adjust cellWidths as needed
       });
 
-      doc.save(`${title}.pdf`);
+      doc.save(`${title}.pdf`);*/
     }
   }
 
