@@ -8,6 +8,7 @@ import { collection, query, where, getDocs, doc } from "firebase/firestore";
 import { loadStripe } from "@stripe/stripe-js";
 import CheckoutForm from "./CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
+import { UserContext } from "./App";
 
 const stripePromise = loadStripe(
   import.meta.env.VITE_REACT_APP_stripePublicKey
@@ -16,17 +17,22 @@ const stripePromise = loadStripe(
 export default function PricingDialog({ purchaseTypeFilter, title }) {
   const [products, setProducts] = React.useState([]);
   const [clientSecret, setClientSecret] = React.useState("");
+  const { user } = React.useContext(UserContext);
 
   async function fetchPaymentCheckout(priceId, mode) {
     // Create PaymentIntent as soon as the page loads
-    fetch("https://createcheckoutsession-e3gzrcyznq-ey.a.run.app", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        priceId: priceId,
-        mode: mode,
-      }),
-    })
+    //fetch("https://createcheckoutsession-e3gzrcyznq-ey.a.run.app", {
+    fetch(
+      "https://europe-west3-home-page-authentication.cloudfunctions.net/ext-firestore-stripe-payments-handleWebhookEvents",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          priceId: priceId,
+          mode: mode,
+        }),
+      }
+    )
       .then((res) => {
         if (!res.ok && res.status !== 303) {
           throw new Error(`Server responded with a status of ${res.status}`);
