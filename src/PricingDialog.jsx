@@ -4,7 +4,15 @@ import { Cross2Icon } from "@radix-ui/react-icons";
 import "./Buttons.css";
 import "./PricingDialog.css";
 import { db } from "./Firebase.jsx";
-import { collection, query, where, getDocs, doc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  addDoc,
+  onSnapshot,
+} from "firebase/firestore";
 import { loadStripe } from "@stripe/stripe-js";
 import CheckoutForm from "./CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
@@ -18,43 +26,40 @@ export default function PricingDialog({ purchaseTypeFilter, title }) {
   const [products, setProducts] = React.useState([]);
   const [clientSecret, setClientSecret] = React.useState("");
   const { user } = React.useContext(UserContext);
+  const [unsubscribe, setUnsubscribe] = React.useState(null);
 
-  async function fetchPaymentCheckout(priceId, mode) {
-    // Create PaymentIntent as soon as the page loads
-    //fetch("https://createcheckoutsession-e3gzrcyznq-ey.a.run.app", {
-    fetch(
-      "https://europe-west3-home-page-authentication.cloudfunctions.net/ext-firestore-stripe-payments-handleWebhookEvents",
+  async function fetchPaymentCheckoutTest(priceId, mode) {
+    const docRef = await addDoc(
+      collection(db, "customers", user.uid, "checkout_sessions"),
       {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          priceId: priceId,
-          mode: mode,
-        }),
+        price: priceId,
+        success_url: window.location.origin,
+        cancel_url: window.location.origin,
       }
-    )
-      .then((res) => {
-        if (!res.ok && res.status !== 303) {
-          throw new Error(`Server responded with a status of ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        // Redirect the user to the Stripe Checkout Session
-        window.location.href = data.url;
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    );
+
+    const unsubscribeSnapshot = onSnapshot(docRef, (doc) => {
+      const { error, url } = doc.data();
+      if (error) {
+        alert(`An error occured: ${error.message}`);
+      }
+      if (url) {
+        window.location.assign(url);
+        unsubscribeSnapshot(); // Unsubscribe when the user is redirected
+      }
+    });
+
+    setUnsubscribe(() => unsubscribeSnapshot);
   }
 
-  const appearance = {
-    theme: "stripe",
-  };
-  const options = {
-    clientSecret,
-    appearance,
-  };
+  // Cleanup when the component unmounts
+  React.useEffect(() => {
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [unsubscribe]);
 
   React.useEffect(() => {
     const fetchProducts = async () => {
@@ -101,51 +106,41 @@ export default function PricingDialog({ purchaseTypeFilter, title }) {
           <Dialog.Title className="PricingDialogTitle">
             Pricing Plans
           </Dialog.Title>
-          {clientSecret ? (
-            <>
-              <Elements options={options} stripe={stripePromise}>
-                <CheckoutForm />
-              </Elements>
-            </>
-          ) : (
-            <div className="PricingTable">
-              {products &&
-                Object.entries(products).map(([productId, productData]) => (
-                  <div className="PricingPlan" key={Math.random()}>
-                    <h2 className="PlanTitle">{productData.name}</h2>
-                    <p className="PlanPrice">
-                      {purchaseTypeFilter === "recurring"
-                        ? `$${
-                            productData.prices.priceData.unit_amount / 100
-                          }/mo.`
-                        : `$${productData.prices.priceData.unit_amount / 100}`}
-                    </p>
-                    <button
-                      className="solid-card-button"
-                      onClick={() => {
-                        if (purchaseTypeFilter === "recurring") {
-                          fetchPaymentCheckout(
-                            productData.prices.priceId,
-                            "subscription"
-                          );
-                        } else if (purchaseTypeFilter === "one_time") {
-                          fetchPaymentCheckout(
-                            productData.prices.priceId,
-                            "payment"
-                          );
-                        } else {
-                          console.log(
-                            "There has been an error with the purchase code"
-                          );
-                        }
-                      }}
-                    >
-                      Subscribe
-                    </button>
-                  </div>
-                ))}
-            </div>
-          )}
+          <div className="PricingTable">
+            {products &&
+              Object.entries(products).map(([productId, productData]) => (
+                <div className="PricingPlan" key={Math.random()}>
+                  <h2 className="PlanTitle">{productData.name}</h2>
+                  <p className="PlanPrice">
+                    {purchaseTypeFilter === "recurring"
+                      ? `$${productData.prices.priceData.unit_amount / 100}/mo.`
+                      : `$${productData.prices.priceData.unit_amount / 100}`}
+                  </p>
+                  <button
+                    className="solid-card-button"
+                    onClick={() => {
+                      if (purchaseTypeFilter === "recurring") {
+                        fetchPaymentCheckoutTest(
+                          productData.prices.priceId,
+                          "subscription"
+                        );
+                      } else if (purchaseTypeFilter === "one_time") {
+                        fetchPaymentCheckoutTest(
+                          productData.prices.priceId,
+                          "payment"
+                        );
+                      } else {
+                        console.log(
+                          "There has been an error with the purchase code"
+                        );
+                      }
+                    }}
+                  >
+                    Subscribe
+                  </button>
+                </div>
+              ))}
+          </div>
           <div
             style={{
               display: "flex",
