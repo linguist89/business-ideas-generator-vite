@@ -13,29 +13,24 @@ import {
   addDoc,
   onSnapshot,
 } from "firebase/firestore";
-import { loadStripe } from "@stripe/stripe-js";
-import CheckoutForm from "./CheckoutForm";
-import { Elements } from "@stripe/react-stripe-js";
 import { UserContext } from "./App";
-
-const stripePromise = loadStripe(
-  import.meta.env.VITE_REACT_APP_stripePublicKey
-);
 
 export default function PricingDialog({ purchaseTypeFilter, title }) {
   const [products, setProducts] = React.useState([]);
-  const [clientSecret, setClientSecret] = React.useState("");
   const { user } = React.useContext(UserContext);
   const [unsubscribe, setUnsubscribe] = React.useState(null);
 
-  async function fetchPaymentCheckoutTest(priceId, mode) {
+  async function stripePayment(priceId, mode) {
+    let data = {
+      price: priceId,
+      success_url: window.location.origin,
+      cancel_url: window.location.origin,
+      mode: mode,
+    };
+
     const docRef = await addDoc(
       collection(db, "customers", user.uid, "checkout_sessions"),
-      {
-        price: priceId,
-        success_url: window.location.origin,
-        cancel_url: window.location.origin,
-      }
+      data
     );
 
     const unsubscribeSnapshot = onSnapshot(docRef, (doc) => {
@@ -120,15 +115,12 @@ export default function PricingDialog({ purchaseTypeFilter, title }) {
                     className="solid-card-button"
                     onClick={() => {
                       if (purchaseTypeFilter === "recurring") {
-                        fetchPaymentCheckoutTest(
+                        stripePayment(
                           productData.prices.priceId,
                           "subscription"
                         );
                       } else if (purchaseTypeFilter === "one_time") {
-                        fetchPaymentCheckoutTest(
-                          productData.prices.priceId,
-                          "payment"
-                        );
+                        stripePayment(productData.prices.priceId, "payment");
                       } else {
                         console.log(
                           "There has been an error with the purchase code"
