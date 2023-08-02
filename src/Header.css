@@ -1,44 +1,42 @@
 .header {
-    background-color: #094C5F;
-    top: 0;
-    width: 100%;
-    z-index: 1;
+  background-color: #094C5F;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 10vh;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .header-wrapper {
+    justify-content: space-around;
   }
-  
-  .header-wrapper{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 10vh;
-    max-width: 1440px;
-    margin: 0 auto;
-  }
-  
-  .HeaderButtonsWrapper{
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-  }
-  
-  .logo {
-    display: flex;
-    align-items: center;
-  }
-  
-  .logo img {
-    width: 75px;
-    height: 75px;
-  }
-  
-  .logo .app-name {
-    font-size: 24px;
-    margin-left: 10px;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-  .header {
-    padding: 1rem;
-  }
-  }
-  
+}
+
+.HeaderButtonsWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  width: 75px;
+  height: 75px;
+}
+
+.logo .app-name {
+  font-size: 24px;
+  margin-left: 10px;
+}

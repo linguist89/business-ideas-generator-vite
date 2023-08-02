@@ -40,7 +40,7 @@ export default function PricingDialog({ purchaseTypeFilter, title }) {
       }
       if (url) {
         window.location.assign(url);
-        unsubscribeSnapshot(); // Unsubscribe when the user is redirected
+        unsubscribeSnapshot();
       }
     });
 

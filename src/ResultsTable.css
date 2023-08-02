@@ -137,3 +137,13 @@
     }
 }
 
+@media only screen and (max-width: 768px) {
+    /* Your existing styles... */
+
+    .ResultsTable td:last-child {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+}
+
