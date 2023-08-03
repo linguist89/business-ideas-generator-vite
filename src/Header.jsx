@@ -6,7 +6,7 @@ import LoginDialog from "./LoginDialog.jsx";
 import PricingDialog from "./PricingDialog";
 import ProfileDialog from "./ProfileDialog";
 import useUserSubscription from "./useUserSubscription";
-import { FiMenu } from "react-icons/fi"; // import the icon from react-icons
+import { FiMenu } from "react-icons/fi";
 
 function Header() {
   const { user, setUser } = React.useContext(UserContext);

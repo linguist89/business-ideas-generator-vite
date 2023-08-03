@@ -197,7 +197,7 @@ function BodyComponent() {
                   </button>
                   <button
                     disabled={ideasLoading}
-                    className="delete-button"
+                    className="DeleteButton"
                     onClick={() => {
                       deleteIdeaFromFirebase(idea.id);
                       setPreviousIdeas(

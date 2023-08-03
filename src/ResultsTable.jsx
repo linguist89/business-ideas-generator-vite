@@ -142,20 +142,18 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
     if (!user) {
       setShowLoginDialog(true);
     } else {
-      setCreatingPdf(true);
-
       const sanitizedTitle = sanitizeTitle(product.product);
       const filename = `${sanitizedTitle}.pdf`;
 
       const doc = new jsPDF();
 
-      // Add title
       doc.setFontSize(22);
       doc.text(product.product, 10, 10);
 
       doc.setFontSize(16);
 
       const headers = ["Parameter", "Detail"];
+      console.log(product);
 
       const data = [
         ["Product", product.product],
@@ -165,19 +163,13 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
         ["Creating the product", product["Creating the product"]],
         ["Finding customers", product["Finding customers"]],
         ["Selling product", product["Selling product"]],
-        [
-          "Consumer Pain Point",
-          product["Consumer Pain Point"].map((obj) => obj.point).join("\n"),
-        ],
-        ["Effort", product["Effort"].map((obj) => obj.point).join("\n")],
-        [
-          "Time",
-          product["Time"].map((obj) => Object.values(obj)[0]).join("\n"),
-        ],
+        ["Consumer Pain Point", product["Consumer Pain Point"]],
+        ["Effort", product["Effort"]],
+        ["Time", product["Time"]],
       ];
 
       autoTable(doc, {
-        startY: 30, // start after the title
+        startY: 30,
         head: [headers],
         body: data,
         styles: { fillColor: [255, 255, 255], textColor: 20, fontSize: 10 },
@@ -188,7 +180,6 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
       });
 
       doc.save(filename);
-      setCreatingPdf(false);
     }
   }
 
@@ -219,7 +210,7 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
       doc.setFontSize(16);
 
       autoTable(doc, {
-        startY: 30, // start after the title
+        startY: 30,
         head: headers,
         body: data,
         styles: { fillColor: [255, 255, 255], textColor: 20, fontSize: 10 },
@@ -228,7 +219,7 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
           1: { cellWidth: 50 },
           2: { cellWidth: 50 },
           3: { cellWidth: 50 },
-        }, // Adjust cellWidths as needed
+        },
       });
 
       doc.save(`${title}.pdf`);

@@ -1,15 +1,14 @@
-import React from 'react';
-import './CustomTextarea.css';
+import React from "react";
+import "./CustomTextarea.css";
 
 function CustomTextarea({ instructions, placeholder, infoSetter, value }) {
-
   React.useEffect(() => {
     infoSetter(value);
     // eslint-disable-next-line
   }, []);
 
   return (
-    <div id="textarea">
+    <div className="textarea">
       <div>
         <label htmlFor={instructions} className="custom-label">
           {instructions}
@@ -27,7 +26,7 @@ function CustomTextarea({ instructions, placeholder, infoSetter, value }) {
         }}
       />
     </div>
-  )
+  );
 }
 
 export default CustomTextarea;

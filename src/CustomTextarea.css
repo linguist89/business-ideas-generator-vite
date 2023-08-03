@@ -1,6 +1,8 @@
-#textarea {
+textarea{
+    resize: vertical;
+}
+.textarea {
     width: 100%;
-    /* or any specific width you want */
 }
 
 .custom-label {
