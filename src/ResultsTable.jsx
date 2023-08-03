@@ -12,6 +12,8 @@ import { SelectedIdeaContext } from "./BodyComponent";
 import { UserContext } from "./App";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "./Firebase.jsx";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import PdfIcon from "./assets/images/PdfIcon.svg?component";
 import { CreditContext } from "./App";
 
@@ -140,8 +142,7 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
     if (!user) {
       setShowLoginDialog(true);
     } else {
-      alert("PDF downlaod TODO");
-      /*setCreatingPdf(true);
+      setCreatingPdf(true);
 
       const sanitizedTitle = sanitizeTitle(product.product);
       const filename = `${sanitizedTitle}.pdf`;
@@ -152,47 +153,42 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
       doc.setFontSize(22);
       doc.text(product.product, 10, 10);
 
-      // Add content
       doc.setFontSize(16);
-      doc.text(`Product: ${product.product}`, 10, 30);
-      doc.text(`Description: ${product.description}`, 10, 40);
-      doc.text(`Potential Clients: ${product.potentialClients}`, 10, 50);
-      doc.text(
-        `Where to find the clients: ${product.whereToFindClients}`,
-        10,
-        60
-      );
-      doc.text(
-        `Creating the product: ${product["Creating the product"]}`,
-        10,
-        70
-      );
-      doc.text(`Finding customers: ${product["Finding customers"]}`, 10, 80);
-      doc.text(`Selling product: ${product["Selling product"]}`, 10, 90);
-      doc.text(
-        `Consumer Pain Point: ${product["Consumer Pain Point"]
-          .map((obj) => obj.point)
-          .join("\n")}`,
-        10,
-        100
-      );
-      doc.text(
-        `Effort: ${product["Effort"].map((obj) => obj.point).join("\n")}`,
-        10,
-        110
-      );
-      doc.text(
-        `Time: ${product["Time"]
-          .map((obj) => Object.values(obj)[0])
-          .join("\n")}`,
-        10,
-        120
-      );
 
-      // You can adjust the positions as per your requirement
+      const headers = ["Parameter", "Detail"];
+
+      const data = [
+        ["Product", product.product],
+        ["Description", product.description],
+        ["Potential Clients", product.potentialClients],
+        ["Where to find the clients", product.whereToFindClients],
+        ["Creating the product", product["Creating the product"]],
+        ["Finding customers", product["Finding customers"]],
+        ["Selling product", product["Selling product"]],
+        [
+          "Consumer Pain Point",
+          product["Consumer Pain Point"].map((obj) => obj.point).join("\n"),
+        ],
+        ["Effort", product["Effort"].map((obj) => obj.point).join("\n")],
+        [
+          "Time",
+          product["Time"].map((obj) => Object.values(obj)[0]).join("\n"),
+        ],
+      ];
+
+      autoTable(doc, {
+        startY: 30, // start after the title
+        head: [headers],
+        body: data,
+        styles: { fillColor: [255, 255, 255], textColor: 20, fontSize: 10 },
+        columnStyles: {
+          0: { halign: "right", minCellWidth: 40 },
+          1: { minCellWidth: 50 },
+        },
+      });
 
       doc.save(filename);
-      setCreatingPdf(false);*/
+      setCreatingPdf(false);
     }
   }
 
@@ -200,8 +196,6 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
     if (!user) {
       setShowLoginDialog(true);
     } else {
-      alert("PDF download TODO");
-      /*
       const doc = new jsPDF();
 
       let headers = [
@@ -237,7 +231,7 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
         }, // Adjust cellWidths as needed
       });
 
-      doc.save(`${title}.pdf`);*/
+      doc.save(`${title}.pdf`);
     }
   }
 

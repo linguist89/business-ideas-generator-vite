@@ -14,12 +14,6 @@
   margin: 0 auto;
 }
 
-@media (max-width: 768px) {
-  .header-wrapper {
-    justify-content: space-around;
-  }
-}
-
 .HeaderButtonsWrapper {
   display: flex;
   flex-direction: row;
@@ -39,4 +33,17 @@
 .logo .app-name {
   font-size: 24px;
   margin-left: 10px;
+}
+
+.menu-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .menu-desktop {
+    display: none;
+  }
+  .menu-mobile {
+    display: block;
+  }
 }

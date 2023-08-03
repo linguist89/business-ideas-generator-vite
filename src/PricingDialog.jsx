@@ -14,11 +14,13 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { UserContext } from "./App";
+import Spinner from "./Spinner";
 
 export default function PricingDialog({ purchaseTypeFilter, title }) {
   const [products, setProducts] = React.useState([]);
   const { user } = React.useContext(UserContext);
   const [unsubscribe, setUnsubscribe] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
 
   async function stripePayment(priceId, mode) {
     let data = {
@@ -101,38 +103,46 @@ export default function PricingDialog({ purchaseTypeFilter, title }) {
           <Dialog.Title className="PricingDialogTitle">
             Pricing Plans
           </Dialog.Title>
-          <div className="PricingTable">
-            {products &&
-              Object.entries(products).map(([productId, productData]) => (
-                <div className="PricingPlan" key={Math.random()}>
-                  <h2 className="PlanTitle">{productData.name}</h2>
-                  <p className="PlanPrice">
-                    {purchaseTypeFilter === "recurring"
-                      ? `$${productData.prices.priceData.unit_amount / 100}/mo.`
-                      : `$${productData.prices.priceData.unit_amount / 100}`}
-                  </p>
-                  <button
-                    className="solid-card-button"
-                    onClick={() => {
-                      if (purchaseTypeFilter === "recurring") {
-                        stripePayment(
-                          productData.prices.priceId,
-                          "subscription"
-                        );
-                      } else if (purchaseTypeFilter === "one_time") {
-                        stripePayment(productData.prices.priceId, "payment");
-                      } else {
-                        console.log(
-                          "There has been an error with the purchase code"
-                        );
-                      }
-                    }}
-                  >
-                    Subscribe
-                  </button>
-                </div>
-              ))}
-          </div>
+          {loading ? (
+            <Spinner></Spinner>
+          ) : (
+            <div className="PricingTable">
+              {products &&
+                Object.entries(products).map(([productId, productData]) => (
+                  <div className="PricingPlan" key={Math.random()}>
+                    <h2 className="PlanTitle">{productData.name}</h2>
+                    <p className="PlanPrice">
+                      {purchaseTypeFilter === "recurring"
+                        ? `$${
+                            productData.prices.priceData.unit_amount / 100
+                          }/mo.`
+                        : `$${productData.prices.priceData.unit_amount / 100}`}
+                    </p>
+                    <button
+                      className="solid-card-button"
+                      onClick={() => {
+                        if (purchaseTypeFilter === "recurring") {
+                          setLoading(true);
+                          stripePayment(
+                            productData.prices.priceId,
+                            "subscription"
+                          );
+                        } else if (purchaseTypeFilter === "one_time") {
+                          setLoading(true);
+                          stripePayment(productData.prices.priceId, "payment");
+                        } else {
+                          console.log(
+                            "There has been an error with the purchase code"
+                          );
+                        }
+                      }}
+                    >
+                      Subscribe
+                    </button>
+                  </div>
+                ))}
+            </div>
+          )}
           <div
             style={{
               display: "flex",

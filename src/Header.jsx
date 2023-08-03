@@ -6,6 +6,7 @@ import LoginDialog from "./LoginDialog.jsx";
 import PricingDialog from "./PricingDialog";
 import ProfileDialog from "./ProfileDialog";
 import useUserSubscription from "./useUserSubscription";
+import { FiMenu } from "react-icons/fi"; // import the icon from react-icons
 
 function Header() {
   const { user, setUser } = React.useContext(UserContext);
@@ -14,6 +15,22 @@ function Header() {
   const { userPlan, userPlanActivity, renewalDate } = useUserSubscription(
     setUser,
     setCredits
+  );
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const Buttons = () => (
+    <>
+      <PricingDialog
+        purchaseTypeFilter="recurring"
+        title="Subscriptions"
+      ></PricingDialog>
+      <PricingDialog
+        purchaseTypeFilter="one_time"
+        title="Buy Credits"
+      ></PricingDialog>
+      <ProfileDialog></ProfileDialog>
+    </>
   );
 
   return (
@@ -36,17 +53,9 @@ function Header() {
         )}
         <div className="HeaderButtonsWrapper">
           {user ? (
-            <>
-              <PricingDialog
-                purchaseTypeFilter="recurring"
-                title="Subscriptions"
-              ></PricingDialog>
-              <PricingDialog
-                purchaseTypeFilter="one_time"
-                title="Buy Credits"
-              ></PricingDialog>
-              <ProfileDialog></ProfileDialog>
-            </>
+            <div className="menu-desktop">
+              <Buttons />
+            </div>
           ) : (
             <button
               className="transparent-button"
@@ -55,6 +64,10 @@ function Header() {
               Login
             </button>
           )}
+          <div className="menu-mobile">
+            <FiMenu onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
+            {isMobileMenuOpen && <Buttons />}
+          </div>
           <LoginDialog
             open={showLoginDialog}
             onClose={() => setShowLoginDialog(false)}
