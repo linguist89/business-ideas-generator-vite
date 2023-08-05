@@ -4,6 +4,8 @@ import CustomTextarea from "./CustomTextarea";
 import React from "react";
 import {
   getBusinessIdeasOpenAITest,
+  getContextInfoOpenAITest,
+  getStartingInfoOpenAITest,
   updateFirebaseWithTokens,
 } from "./HelperFunctions";
 import LandingImage from "./assets/images/lighbulb_shadow.png";
@@ -91,6 +93,13 @@ function BodyComponent() {
     });
   };
 
+  const scrollToBottom = () => {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
+  };
+
   async function saveIdeasToFirebase(searchData) {
     try {
       const userIdeasRef = collection(db, "customers", user.uid, "ideas");
@@ -103,33 +112,114 @@ function BodyComponent() {
     }
   }
 
+  async function addContextInfoToIdeas(parsedResponse) {
+    // Loop through all ideas in the parsed response.
+    for (let i = 0; i < parsedResponse.length; i++) {
+      // For each idea, get the additional context information.
+      let additionalInfo;
+      try {
+        additionalInfo = await getContextInfoOpenAITest(parsedResponse[i]);
+      } catch (error) {
+        console.log(
+          "Error in getContextInfoOpenAITest, idea index: ",
+          i,
+          ", Error: ",
+          error.message
+        );
+        continue;
+      }
+      // Add the additional context information to the idea.
+      parsedResponse[i] = {
+        ...parsedResponse[i],
+        "Consumer Pain Point": additionalInfo["Consumer Pain Point"],
+        Effort: additionalInfo["Effort"],
+        Time: additionalInfo["Time"],
+      };
+    }
+    // Return the updated parsed response.
+    return parsedResponse;
+  }
+
+  async function addStartingInfoToIdeas(parsedResponse) {
+    // Loop through all ideas in the parsed response.
+    for (let i = 0; i < parsedResponse.length; i++) {
+      // For each idea, get the additional context information.
+      let additionalInfo;
+      try {
+        additionalInfo = await getStartingInfoOpenAITest(parsedResponse[i]);
+      } catch (error) {
+        console.log(
+          "Error in getStartingInfoOpenAITest, idea index: ",
+          i,
+          ", Error: ",
+          error.message
+        );
+        continue;
+      }
+      // Add the additional context information to the idea.
+      parsedResponse[i] = {
+        ...parsedResponse[i],
+        // Add the starting info to the idea.
+        "Creating the product": additionalInfo["Creating the product"],
+        "Finding customers": additionalInfo["Finding customers"],
+        "Selling product": additionalInfo["Selling product"],
+      };
+    }
+    // Return the updated parsed response.
+    return parsedResponse;
+  }
+
   async function businessIdeasOpenAITest() {
+    let startTime = performance.now();
     if (!user) {
       setShowLoginDialog(true);
     } else {
       setIdeasLoading(true);
       setIdeaResults([]);
+      scrollToBottom();
       let checkedFocus = focus ? focus : "Random product or service";
       let checkedTrends = trends ? trends : "Any customer";
       let checkedCv = cv ? cv : "Various skills";
-      const results = await getBusinessIdeasOpenAITest(
-        checkedFocus,
-        checkedTrends,
-        checkedCv
-      );
-      await updateFirebaseWithTokens(results, credits, setCredits, user);
 
-      let response = results.data.choices[0].message.content;
-      let parsedResponse = JSON.parse(response);
-      parsedResponse = parsedResponse.map((item) => ({
-        ...item,
-        "Consumer Pain Point": [],
-        Effort: [],
-        Time: [],
-        "Creating the product": [],
-        "Finding customers": [],
-        "Selling product": [],
-      }));
+      let results;
+      let parsedResponse;
+      try {
+        results = await getBusinessIdeasOpenAITest(
+          checkedFocus,
+          checkedTrends,
+          checkedCv
+        );
+        await updateFirebaseWithTokens(results, credits, setCredits, user);
+
+        let response = results.data.choices[0].message.content;
+        parsedResponse = JSON.parse(response);
+        console.log("parsedResponse: ", parsedResponse);
+        // Call addContextInfoToIdeas to add additional information to each idea
+        //parsedResponse = await addContextInfoToIdeas(parsedResponse);
+
+        // Call addStartingInfoToIdeas to add additional information to each idea
+        //parsedResponse = await addStartingInfoToIdeas(parsedResponse);
+
+        // Add empty context info and starting info to each idea
+        parsedResponse = parsedResponse.map((idea) => {
+          return {
+            ...idea,
+            "Consumer Pain Point": "",
+            Effort: "",
+            Time: "",
+            "Creating the product": "",
+            "Finding customers": "",
+            "Selling product": "",
+          };
+        });
+
+        console.log("parsedResponse: ", parsedResponse);
+      } catch (error) {
+        console.log(
+          "Error in getBusinessIdeasOpenAITest or getContextInfoOpenAITest or getStartingInfoOpenAITest: ",
+          error.message
+        );
+      }
 
       setIdeaResults(parsedResponse);
       const newIdeaID = await saveIdeasToFirebase({
@@ -153,6 +243,10 @@ function BodyComponent() {
         ...prevIdeas,
       ]);
     }
+    let endTime = performance.now();
+    console.log(
+      `Call to generate business ideas took ${endTime - startTime} milliseconds`
+    );
   }
 
   return (
@@ -269,6 +363,7 @@ function BodyComponent() {
               <ResultsTable
                 key="ResultsTable"
                 products={ideaResults}
+                setProducts={setIdeaResults}
                 title={focus}
                 setShowLoginDialog={setShowLoginDialog}
               />

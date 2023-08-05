@@ -1,7 +1,7 @@
 #ideas-generator {
   display: flex;
   justify-content: space-evenly;
-  width: 100%;
+  padding: 0rem 1rem 5rem 1rem;
   min-height: 50vh;
   padding-top: 2rem;
   padding-bottom: 2rem;
@@ -37,10 +37,6 @@
 
 .IdeaExamplesWrapper{
   padding: 1rem 0rem;
-}
-
-.selected-idea {
-  font-weight: bold;
 }
 
 li{
@@ -186,4 +182,8 @@ li{
     height: 45vh;
     padding-top: 1rem;
   }
+}
+
+.selected-idea {
+  font-weight: bold;
 }

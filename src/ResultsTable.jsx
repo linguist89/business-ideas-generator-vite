@@ -22,7 +22,7 @@ function sanitizeTitle(title) {
   return sanitizedTitle.slice(0, 50);
 }
 
-function ResultsTable({ products, title, setShowLoginDialog }) {
+function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
   const { user } = React.useContext(UserContext);
   const { credits, setCredits } = React.useContext(CreditContext);
   const [ideaContexts, setIdeaContexts] = React.useState([]);
@@ -35,6 +35,8 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
   const [selectedAccordionIndex, setSelectedAccordionIndex] = useState(null);
 
   useEffect(() => {
+    console.log("Products");
+    console.log(products);
     fetch(logo)
       .then((response) => response.blob())
       .then((blob) => {
@@ -46,44 +48,51 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
       });
   }, []);
 
-  async function handleStartButtonClick(product, index, retryCount = 0) {
+  useEffect(() => {
+    console.log(products);
+  }, []);
+
+  async function handleStartButtonClick(product, index) {
     if (!user) {
       setShowLoginDialog(true);
     } else {
       if (howToStart[index] && howToStart[index]["Creating the product"]) {
-        alert(JSON.stringify(howToStart[index]));
+        console.log(JSON.stringify(howToStart[index]));
       } else {
         setStartLoading((prevStartLoading) => ({
           ...prevStartLoading,
           [index]: true,
         }));
         try {
-          const results = await getStartingInfoOpenAITest(product);
-          let howToStartResults = JSON.parse(
-            results.data.choices[0].message.content
-          );
+          const howToResults = await getStartingInfoOpenAITest(product);
           console.log("Results");
-          console.log(howToStartResults);
+          console.log(howToResults);
 
-          setHowToStart((prevTasks) => {
-            const newTasks = [...prevTasks];
-            newTasks[index] = { ...newTasks[index], ...howToStartResults };
-            return newTasks;
+          setProducts((prevHowTo) => {
+            const newHowTo = [...prevHowTo];
+            newHowTo[index] = {
+              ...newHowTo[index],
+              ...howToResults,
+            };
+            return newHowTo;
           });
 
           const ideaDoc = doc(db, "customers", user.uid, "ideas", selectedIdea);
           await updateDoc(ideaDoc, {
             ideas: products.map((p, i) =>
-              i === index ? { ...p, ...howToStartResults } : p
+              i === index ? { ...p, ...howToResults } : p
             ),
           });
-          await updateFirebaseWithTokens(results, credits, setCredits, user);
+
+          // Assuming the 'updateFirebaseWithTokens' function aligns with the new results
+          await updateFirebaseWithTokens(
+            howToResults,
+            credits,
+            setCredits,
+            user
+          );
         } catch (error) {
           console.error(error);
-          if (retryCount < 5) {
-            console.log(`Retrying... (${retryCount + 1})`);
-            handleStartButtonClick(product, index, retryCount + 1);
-          }
         } finally {
           setStartLoading((prevStartLoading) => ({
             ...prevStartLoading,
@@ -94,43 +103,50 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
     }
   }
 
-  async function handleButtonClick(product, index, retryCount = 0) {
+  async function handleButtonClick(product, index) {
     if (!user) {
       setShowLoginDialog(true);
     } else {
-      if (ideaContexts[index]) {
-        alert(JSON.stringify(ideaContexts[index]));
+      if (
+        product["Consumer Pain Point"] &&
+        product["Effort"] &&
+        product["Time"]
+      ) {
+        console.log(
+          `${product["Consumer Pain Point"]} ${product["Effort"]} ${product["Time"]}`
+        );
       } else {
         setLoading((prevLoading) => ({ ...prevLoading, [index]: true }));
         try {
-          const results = await getContextInfoOpenAITest(product);
+          const contextResults = await getContextInfoOpenAITest(product);
           console.log("Raw results:");
-          console.log(results);
-          let optimizedResults = JSON.parse(
-            results.data.choices[0].message.content
-          );
-          console.log("Results");
-          console.log(optimizedResults);
+          console.log(contextResults);
 
-          setIdeaContexts((prevTasks) => {
-            const newTasks = [...prevTasks];
-            newTasks[index] = optimizedResults;
-            return newTasks;
+          setProducts((prevContexts) => {
+            const newContexts = [...prevContexts];
+            newContexts[index] = {
+              ...newContexts[index],
+              "Consumer Pain Point": contextResults["Consumer Pain Point"],
+              Effort: contextResults["Effort"],
+              Time: contextResults["Time"],
+            };
+            return newContexts;
           });
 
           const ideaDoc = doc(db, "customers", user.uid, "ideas", selectedIdea);
           await updateDoc(ideaDoc, {
             ideas: products.map((p, i) =>
-              i === index ? { ...p, ...optimizedResults } : p
+              i === index ? { ...p, ...contextResults } : p
             ),
           });
-          await updateFirebaseWithTokens(results, credits, setCredits, user);
+          await updateFirebaseWithTokens(
+            contextResults,
+            credits,
+            setCredits,
+            user
+          );
         } catch (error) {
           console.error(error);
-          if (retryCount < 5) {
-            console.log(`Retrying... (${retryCount + 1})`);
-            handleButtonClick(product, index, retryCount + 1);
-          }
         } finally {
           setLoading((prevLoading) => ({ ...prevLoading, [index]: false }));
         }
@@ -226,6 +242,62 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
     }
   }
 
+  function renderHowToDialog(product, index) {
+    if (
+      product["Creating the product"].length > 0 &&
+      product["Finding customers"].length > 0 &&
+      product["Selling product"].length > 0
+    ) {
+      return <HowToDialog content={product}></HowToDialog>;
+    } else if (startLoading[index]) {
+      return <span>Loading...</span>;
+    } else if (howToStart[index]) {
+      return <HowToDialog content={howToStart[index]}></HowToDialog>;
+    } else {
+      return (
+        <button
+          onClick={() => handleStartButtonClick(product, index)}
+          className="solid-card-button"
+        >
+          Find out how to start
+        </button>
+      );
+    }
+  }
+
+  function renderContextDialog(product, index) {
+    if (
+      product["Consumer Pain Point"].length > 0 &&
+      product["Effort"].length > 0 &&
+      product["Time"].length > 0
+    ) {
+      return (
+        <ContextDialog
+          content={product}
+          title={product["product"]}
+        ></ContextDialog>
+      );
+    } else if (loading[index]) {
+      return <span>Loading...</span>;
+    } else if (ideaContexts[index]) {
+      return (
+        <ContextDialog
+          content={ideaContexts[index]}
+          title={product["product"]}
+        ></ContextDialog>
+      );
+    } else {
+      return (
+        <button
+          onClick={() => handleButtonClick(product, index)}
+          className="solid-card-button"
+        >
+          Get Offering Optimization
+        </button>
+      );
+    }
+  }
+
   return (
     <div className="ResultsTable">
       <div className="DownloadButtonWrapper">
@@ -247,7 +319,7 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
             <th>More Info</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody key={Math.random()}>
           {products.map((product, index) => (
             <>
               <tr key={index}>
@@ -275,52 +347,8 @@ function ResultsTable({ products, title, setShowLoginDialog }) {
                   <td colSpan="5">
                     <div className="AccordionMenuWrapper">
                       <div className="MoreInfoWrapper">
-                        <div>
-                          {product["Creating the product"].length > 0 &&
-                          product["Finding customers"].length > 0 &&
-                          product["Selling product"].length > 0 ? (
-                            <HowToDialog content={product}></HowToDialog>
-                          ) : startLoading[index] ? (
-                            <span>Loading...</span>
-                          ) : howToStart[index] ? (
-                            <HowToDialog
-                              content={howToStart[index]}
-                            ></HowToDialog>
-                          ) : (
-                            <button
-                              onClick={() =>
-                                handleStartButtonClick(product, index)
-                              }
-                              className="solid-card-button"
-                            >
-                              Find out how to start
-                            </button>
-                          )}
-                        </div>
-                        <div>
-                          {product["Consumer Pain Point"].length > 0 &&
-                          product["Effort"].length > 0 &&
-                          product["Time"].length > 0 ? (
-                            <ContextDialog
-                              content={product}
-                              title={product["product"]}
-                            ></ContextDialog>
-                          ) : loading[index] ? (
-                            <span>Loading...</span>
-                          ) : ideaContexts[index] ? (
-                            <ContextDialog
-                              content={ideaContexts[index]}
-                              title={product["product"]}
-                            ></ContextDialog>
-                          ) : (
-                            <button
-                              onClick={() => handleButtonClick(product, index)}
-                              className="solid-card-button"
-                            >
-                              Get Offering Optimization
-                            </button>
-                          )}
-                        </div>
+                        <div>{renderHowToDialog(product, index)}</div>
+                        <div>{renderContextDialog(product, index)}</div>
                       </div>
                       <div className="SinglePDFWrapper">
                         <button

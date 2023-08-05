@@ -13,3 +13,8 @@ body {
   font-family: 'Poppins';
   margin: 0;
 }
+
+textarea {
+  font-family: "Poppins";
+  padding: 0.4rem;
+}

@@ -120,6 +120,12 @@
   gap: 1rem;
 }
 
+.social-logins input{
+  width: 13rem;
+  height: 1.5rem;
+  border-radius: 0.2rem;
+}
+
 .link-button {
   background: none;
   border: none;
