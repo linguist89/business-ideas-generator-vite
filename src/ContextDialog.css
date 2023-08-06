@@ -31,6 +31,12 @@
   z-index: 2;
 }
 
+.ContextDialog p {
+  padding: 1rem;
+  border-radius: 0.4rem;
+  font-size: 1.2rem;
+}
+
 .ContextDialogContent h1{
   font-size: 1.4rem;
   font-weight: bold;
@@ -194,8 +200,7 @@
 @media (max-width: 768px) {
 
   .ContextDialogContent {
-    width: 98%;
-    max-width: 98%;
+    max-width: 90%;
     padding: 1rem;
   }
 

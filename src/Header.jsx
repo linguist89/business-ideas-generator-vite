@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Header.css";
-import { UserContext, CreditContext } from "./App";
+import { UserContext, CreditContext, PricingContext } from "./App";
 import HeaderImage from "./assets/images/site_logo.png";
 import LoginDialog from "./LoginDialog.jsx";
 import PricingDialog from "./PricingDialog";
@@ -12,6 +12,8 @@ function Header() {
   const { user, setUser } = React.useContext(UserContext);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const { credits, setCredits } = React.useContext(CreditContext);
+  const { showPricingDialog, setShowPricingDialog } =
+    React.useContext(PricingContext);
   const { userPlan, userPlanActivity, renewalDate } = useUserSubscription(
     setUser,
     setCredits
@@ -22,10 +24,15 @@ function Header() {
   const Buttons = () => (
     <>
       <PricingDialog
+        open={showPricingDialog}
+        onClose={() => setShowPricingDialog(false)}
         purchaseTypeFilter="recurring"
         title="Subscriptions"
+        trigger={true}
       ></PricingDialog>
       <PricingDialog
+        open={showPricingDialog}
+        onClose={() => setShowPricingDialog(false)}
         purchaseTypeFilter="one_time"
         title="Buy Credits"
       ></PricingDialog>

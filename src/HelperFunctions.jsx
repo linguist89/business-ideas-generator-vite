@@ -71,7 +71,7 @@ export async function getContextInfoOpenAITest(businessIdea, retryCount = 0) {
       .map(([key, value]) => `${key}: ${value}`)
       .join("\n");
     let question =
-      'From the idea above, give the outline in the following structure. The output should be a dictionary as is described below:\n{\n"Consumer Pain Point": "What are consumer pain points in relation to this idea?",\n"Effort": "What are things that can be done to minimize the consumers effort in getting the solution?",\n"Time": "What are things that can be done to minimize the consumers time in getting the solution?"\n}';
+      'From the idea above, give the outline in the following structure. The output should be a dictionary as is described below:\n{\n"Consumer Pain Point": "Biggest consumer pain points in about 3 sentences",\n"Effort": "Biggest ways to minimize the consumer\'s effort in about 3 sentences",\n"Time": "Biggest ways to minimize the time the consumer has to spend to get the product in about 3 sentences"\n}';
     let content = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
@@ -217,9 +217,11 @@ export async function updateFirebaseWithTokens(
   setCredits,
   user
 ) {
+  console.log(completion);
+  console.log("TODO: Update Firebase with tokens used");
   const completion_data = {
     model: completion.data.model,
-    //'model': 'gpt-3.5-turbo',
+    //model: "gpt-3.5-turbo",
     //This needs to be fixed completion isn't the completion, but rather the results
     usage: completion.data.usage,
     timestamp: new Date(),

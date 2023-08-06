@@ -36,7 +36,6 @@
     padding: 1rem;
     border-radius: 0.4rem;
     font-size: 1.2rem;
-
 }
 
 .HowToDialogContent h1 {
@@ -209,8 +208,7 @@
 @media (max-width: 768px) {
 
     .HowToDialogContent {
-        width: 98%;
-        max-width: 98%;
+        max-width: 90%;
         padding: 1rem;
     }
 

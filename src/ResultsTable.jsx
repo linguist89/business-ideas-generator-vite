@@ -168,8 +168,7 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
 
       doc.setFontSize(16);
 
-      const headers = ["Parameter", "Detail"];
-      console.log(product);
+      const headers = ["Heading", "Details"];
 
       const data = [
         ["Product", product.product],
@@ -190,7 +189,7 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
         body: data,
         styles: { fillColor: [255, 255, 255], textColor: 20, fontSize: 10 },
         columnStyles: {
-          0: { halign: "right", minCellWidth: 40 },
+          0: { halign: "left", minCellWidth: 40 },
           1: { minCellWidth: 50 },
         },
       });

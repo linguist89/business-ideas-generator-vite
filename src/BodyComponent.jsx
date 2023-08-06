@@ -12,7 +12,7 @@ import LandingImage from "./assets/images/lighbulb_shadow.png";
 import ResultsTable from "./ResultsTable";
 import Spinner from "./Spinner";
 import "./Buttons.css";
-import { UserContext } from "./App";
+import { UserContext, PricingContext } from "./App";
 import LoginDialog from "./LoginDialog";
 import { db } from "./Firebase.jsx";
 import {
@@ -32,6 +32,8 @@ export const SelectedIdeaContext = React.createContext();
 function BodyComponent() {
   const { user } = React.useContext(UserContext);
   const { credits, setCredits } = React.useContext(CreditContext);
+  const { showPricingDialog, setShowPricingDialog } =
+    React.useContext(PricingContext);
   const [showLoginDialog, setShowLoginDialog] = React.useState(false);
   const [focus, setFocus] = React.useState();
   const [trends, setTrends] = React.useState();
@@ -169,7 +171,20 @@ function BodyComponent() {
     return parsedResponse;
   }
 
+  function checkCreditAmount() {
+    if (credits <= 0) {
+      alert("Buy more credits to generate more ideas");
+      return false;
+    }
+    return true;
+  }
+
   async function businessIdeasOpenAITest() {
+    // Validate that the user has more than 0 credits.
+    if (!checkCreditAmount()) {
+      return;
+    }
+
     let startTime = performance.now();
     if (!user) {
       setShowLoginDialog(true);

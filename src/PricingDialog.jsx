@@ -16,7 +16,12 @@ import {
 import { UserContext } from "./App";
 import Spinner from "./Spinner";
 
-export default function PricingDialog({ purchaseTypeFilter, title }) {
+export default function PricingDialog({
+  open,
+  onClose,
+  purchaseTypeFilter,
+  title,
+}) {
   const [products, setProducts] = React.useState([]);
   const { user } = React.useContext(UserContext);
   const [unsubscribe, setUnsubscribe] = React.useState(null);
@@ -48,6 +53,12 @@ export default function PricingDialog({ purchaseTypeFilter, title }) {
 
     setUnsubscribe(() => unsubscribeSnapshot);
   }
+
+  React.useEffect(() => {
+    if (user) {
+      onClose(false);
+    }
+  }, [user, onClose]);
 
   // Cleanup when the component unmounts
   React.useEffect(() => {
