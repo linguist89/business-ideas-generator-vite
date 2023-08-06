@@ -36,11 +36,13 @@
   flex-wrap: wrap;
   gap: 2rem;
   margin-top: 2rem;
+  overflow-y: scroll;
+  padding: 2rem;
 }
 
 .PricingPlan {
   flex: 1;
-  min-width: 200px;
+  width: 100%;
   padding: 2rem;
   border-radius: 0.4rem;
   box-shadow: 0 1px 3px #00000099;
@@ -99,13 +101,12 @@
 @media (max-width: 768px) {
 
   .PricingDialogContent {
-    width: 98%;
-    max-width: 98%;
+    max-width: 90%;
     padding: 1rem;
   }
 
   .PricingPlan {
-    min-width: 100%;
+    max-width: 100%;
   }
 
   .PlanTitle {

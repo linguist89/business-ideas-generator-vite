@@ -13,16 +13,20 @@
   }
   
   .ProfileDialogContent {
-    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
     border-radius: 0.4rem;
-    box-shadow: 0px 10px 38px -10px #094C5F, 0px 10px 20px -15px #094C5F;
+    box-shadow: #094C5F 0px 10px 38px -10px, #094C5F 0px 10px 20px -15px;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: auto;
-    padding: 3rem;
+    width: 80%;
+    min-height: 85vh;
     animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 2rem;
+    z-index: 2;
   }
   
   .ProfileDialogContent:focus {
@@ -31,9 +35,6 @@
   
   .profile-information {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     height: 100%;
     gap: 1rem;
   }

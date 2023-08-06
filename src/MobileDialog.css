@@ -1,15 +1,8 @@
 /* reset */
-.MobileDialog button,
-.MobileDialog fieldset,
-.MobileDialog input {
+.MobileDialogContent button,
+.MobileDialogContent fieldset,
+.MobileDialogContent input {
   all: unset;
-}
-
-.MobileDialogOverlay {
-  background-color: #00000099;
-  position: fixed;
-  inset: 0;
-  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .MobileDialogContent {
@@ -19,10 +12,9 @@
   border-radius: 0.4rem;
   box-shadow: #094C5F 0px 10px 38px -10px, #094C5F 0px 10px 20px -15px;
   position: fixed;
-  top: 50%;
-  left: 50%;
+  top: 20vh;
+  left: 75vw;
   transform: translate(-50%, -50%);
-  width: 90vw;
   max-width: 65vw;
   max-height: 85vh;
   animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -30,106 +22,19 @@
   z-index: 2;
 }
 
-.MobileTable {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.MobilePlan {
-  flex: 1;
-  min-width: 200px;
-  padding: 2rem;
-  border-radius: 0.4rem;
-  box-shadow: 0 1px 3px #00000099;
-  text-align: center;
-}
-
-.PlanTitle {
-  font-size: 1.4rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-.PlanPrice {
-  font-size: 2rem;
-  color: #0E7490;
-  margin-bottom: 2rem;
-}
-
-.PlanFeatures {
-  list-style-type: none;
-  padding: 0;
-}
-
-.FeatureItem {
-  font-size: 1.2rem;
-  padding: 1rem 0;
-  border-top: 1px solid #eeeeee;
-}
-
-.MobileDialogTitle{
-  font-size: 2rem;
-  font-weight: bold;
-  padding-bottom: 2rem;
-}
-
-@keyframes overlayShow {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes contentShow {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -48%) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-@media (max-width: 768px) {
-
-  .MobileDialogContent {
-    width: 98%;
-    max-width: 98%;
-    padding: 1rem;
-  }
-
-  .MobilePlan {
-    min-width: 100%;
-  }
-
-  .PlanTitle {
-    font-size: 1.2rem;
-  }
-
-  .PlanPrice {
-    font-size: 1.6rem;
-  }
-
-  .FeatureItem {
-    font-size: 1em;
-    padding: 7px;
-    margin-bottom: 7px;
-  }
-
-  .MobileDialogTitle {
-    font-size: 1.5rem;
-    padding-bottom: 1rem;
-  }
+.DropdownMenuArrow {
+  fill: #ffffff;
 }
 
 .HamburgerIcon {
-    height: 3rem;
-    width: 3rem;
-    color: white;
+  height: 2.5rem;
+  width: 2.5rem;
+  color: white;
+  cursor: pointer;
+}
+
+@media (min-width: 769px) {
+  .mobile-trigger {
+    display: none;
   }
+}

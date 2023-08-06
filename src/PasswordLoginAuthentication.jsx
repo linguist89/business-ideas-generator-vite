@@ -1,27 +1,27 @@
 // PasswordLoginAuthentication.jsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "./Firebase.jsx";
-import './PasswordLoginAuthentication.css';
-import './Buttons.css';
+import "./PasswordLoginAuthentication.css";
+import "./Buttons.css";
 
 function PasswordLoginAuthentication() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleInputChange = (event, setter) => {
     setter(event.target.value);
-  }
+  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-      setError(error.message);
+      setError("Error logging in. Please try again or sign up.");
     }
-  }
+  };
 
   return (
     <form className="authentication-form" onSubmit={handleLogin}>
@@ -39,10 +39,12 @@ function PasswordLoginAuthentication() {
         placeholder="Password"
         autoComplete="current-password"
       />
-      <button type="submit" className="solid-card-button">Login</button>
+      <button type="submit" className="solid-card-button">
+        Login
+      </button>
       {error && <p>{error}</p>}
     </form>
-  )
+  );
 }
 
 export default PasswordLoginAuthentication;

@@ -180,15 +180,14 @@ function BodyComponent() {
   }
 
   async function businessIdeasOpenAITest() {
-    // Validate that the user has more than 0 credits.
-    if (!checkCreditAmount()) {
-      return;
-    }
-
     let startTime = performance.now();
     if (!user) {
       setShowLoginDialog(true);
     } else {
+      // Validate that the user has more than 0 credits.
+      if (!checkCreditAmount()) {
+        return;
+      }
       setIdeasLoading(true);
       setIdeaResults([]);
       scrollToBottom();

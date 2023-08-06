@@ -1,19 +1,28 @@
 import React from "react";
-import * as Dialog from "@radix-ui/react-dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import PricingDialog from "./PricingDialog";
 import ProfileDialog from "./ProfileDialog";
 import { FiMenu } from "react-icons/fi";
 import "./MobileDialog.css";
+import { PricingContext } from "./App";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 export default function MobileDialog() {
+  const { showPricingDialog, setShowPricingDialog } =
+    React.useContext(PricingContext);
+
   const Buttons = () => (
     <>
       <PricingDialog
+        open={showPricingDialog}
+        onClose={() => setShowPricingDialog(false)}
         purchaseTypeFilter="recurring"
         title="Subscriptions"
+        trigger={true}
       ></PricingDialog>
       <PricingDialog
+        open={showPricingDialog}
+        onClose={() => setShowPricingDialog(false)}
         purchaseTypeFilter="one_time"
         title="Buy Credits"
       ></PricingDialog>
@@ -22,21 +31,14 @@ export default function MobileDialog() {
   );
 
   return (
-    <Dialog.Root>
-      <Dialog.Trigger asChild>
-        <FiMenu className="HamburgerIcon" />
-      </Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Overlay className="MobileDialogOverlay" />
-        <Dialog.Content className="MobileDialogContent">
-          <Buttons />
-          <Dialog.Close asChild>
-            <button className="IconButton" aria-label="Close">
-              <Cross2Icon />
-            </button>
-          </Dialog.Close>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger asChild>
+        <FiMenu className="HamburgerIcon mobile-trigger" />
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content className="MobileDialogContent">
+        <Buttons />
+        <DropdownMenu.Arrow />
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
   );
 }

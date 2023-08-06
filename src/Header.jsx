@@ -6,7 +6,8 @@ import LoginDialog from "./LoginDialog.jsx";
 import PricingDialog from "./PricingDialog";
 import ProfileDialog from "./ProfileDialog";
 import useUserSubscription from "./useUserSubscription";
-import { FiMenu } from "react-icons/fi";
+import "./MobileDialog.css";
+import MobileDialog from "./MobileDialog";
 
 function Header() {
   const { user, setUser } = React.useContext(UserContext);
@@ -18,8 +19,6 @@ function Header() {
     setUser,
     setCredits
   );
-
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const Buttons = () => (
     <>
@@ -50,18 +49,21 @@ function Header() {
           <div className="welcome-div">
             {
               <>
-                <p>{`Welcome, ${
+                <p className="HeaderText">{`Welcome, ${
                   user.displayName ? user.displayName : user.email
                 }`}</p>
-                <p>{`You have ${credits} credits remaining`}</p>
+                <p className="HeaderText">{`You have ${credits} credits remaining`}</p>
               </>
             }
           </div>
         )}
         <div className="HeaderButtonsWrapper">
           {user ? (
-            <div className="menu-desktop">
-              <Buttons />
+            <div>
+              <div className="menu-desktop">
+                <Buttons />
+              </div>
+              <MobileDialog></MobileDialog>
             </div>
           ) : (
             <button
@@ -71,10 +73,7 @@ function Header() {
               Login
             </button>
           )}
-          <div className="menu-mobile">
-            <FiMenu onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
-            {isMobileMenuOpen && <Buttons />}
-          </div>
+
           <LoginDialog
             open={showLoginDialog}
             onClose={() => setShowLoginDialog(false)}

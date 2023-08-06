@@ -83,6 +83,7 @@ li{
   font-size: min(4.1rem, 7vw - 1rem);
   font-weight: bold;
   text-align: left;
+  margin: 0;
 }
 
 @media (max-width: 768px) {
@@ -92,6 +93,7 @@ li{
 
   .title {
     font-size: 2.5rem;
+    padding-top: 2rem;
   }
 
   .table-section{
@@ -106,6 +108,8 @@ li{
 .subtitle {
   font-size: 1.5rem;
   text-align: left;
+  font-weight: 200;
+  margin: 0;
 }
 
 
@@ -114,7 +118,7 @@ li{
   justify-content: space-evenly;
   background-color: #0E7490;
   color: #fff;
-  height: 100vh;
+  height: 100%;
   align-items: center;
   width: 100%;
 }
@@ -129,8 +133,7 @@ li{
 @media (max-width: 768px) {
   .body-component {
     flex-direction: column;
-    padding-top: 50px;
-    padding-left: 0;
+
   }
   .generate-section, .previous-items-section{
     max-width: 95vw;

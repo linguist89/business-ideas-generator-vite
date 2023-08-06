@@ -3,18 +3,6 @@ const admin = require("firebase-admin");
 
 admin.initializeApp();
 
-/* exports.addPayment =
-functions.region('europe-west3').https.onRequest(async (req, res) => {
-    const userId = "ASDFlkajd9dsfskdA";
-    const writeResult = await admin.firestore()
-        .collection("customers")
-        .doc(userId)
-        .collection("payments")
-        .add({ credits: 2000 });
-    console.log("The record that was just created")
-    res.json({ status: "Success!", result: writeResult });
-});*/
-
 exports.onPaymentUpdate = functions.region("europe-west3").firestore
   .document("customers/{userId}/payments/{documentId}")
   .onCreate(async (snapshot, context) => {

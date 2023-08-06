@@ -12,6 +12,11 @@
   height: 10vh;
   max-width: 1440px;
   margin: 0 auto;
+  padding: 0rem 2rem;
+}
+
+.HeaderText{
+  margin: 0;
 }
 
 .HeaderButtonsWrapper {
@@ -25,8 +30,8 @@
 }
 
 .logo img {
-  width: 75px;
-  height: 75px;
+  width: 4rem;
+  height: 4rem;
 }
 
 .logo .app-name {

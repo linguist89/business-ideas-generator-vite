@@ -2,6 +2,12 @@
     color: #ffffff;
 }
 
+@media (max-width: 768px) {
+  .welcome-div {
+    display: none;
+  }
+}
+
 .google-button {
     display: flex;
     align-items: center;
