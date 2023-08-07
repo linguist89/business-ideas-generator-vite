@@ -121,14 +121,18 @@ export default function PricingDialog({
               {products &&
                 Object.entries(products).map(([productId, productData]) => (
                   <div className="PricingPlan" key={Math.random()}>
-                    <h2 className="PlanTitle">{productData.name}</h2>
-                    <p className="PlanPrice">
-                      {purchaseTypeFilter === "recurring"
-                        ? `$${
-                            productData.prices.priceData.unit_amount / 100
-                          }/mo.`
-                        : `$${productData.prices.priceData.unit_amount / 100}`}
-                    </p>
+                    <div className="PlainInfoWrapper">
+                      <h2 className="PlanTitle">{productData.name}</h2>
+                      <p className="PlanPrice">
+                        {purchaseTypeFilter === "recurring"
+                          ? `$${
+                              productData.prices.priceData.unit_amount / 100
+                            }/mo.`
+                          : `$${
+                              productData.prices.priceData.unit_amount / 100
+                            }`}
+                      </p>
+                    </div>
                     <button
                       className="solid-card-button"
                       onClick={() => {

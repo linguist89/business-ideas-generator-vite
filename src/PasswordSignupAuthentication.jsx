@@ -19,14 +19,18 @@ function PasswordSignupAuthentication() {
 
   const handleSignup = async () => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      console.log("Signing up.");
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
       // After sign up, send an email verification link
       if (userCredential.user) {
         await sendEmailVerification(userCredential.user);
       }
-
-      await auth.signOut();
+      //await auth.signOut();
     } catch (error) {
       setError("Error signing up. Please check your email and password.");
     }

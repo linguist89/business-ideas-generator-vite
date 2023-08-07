@@ -52,7 +52,11 @@ function Header() {
                 <p className="HeaderText">{`Welcome, ${
                   user.displayName ? user.displayName : user.email
                 }`}</p>
-                <p className="HeaderText">{`You have ${credits} credits remaining`}</p>
+                {user.emailVerified ? (
+                  <p className="HeaderText">{`You have ${credits} credits remaining`}</p>
+                ) : (
+                  <p className="HeaderText">Please verify your email</p>
+                )}
               </>
             }
           </div>

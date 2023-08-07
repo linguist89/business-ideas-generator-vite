@@ -8,9 +8,10 @@ import {
 import { UserContext } from "./App";
 import "./Buttons.css";
 import EmailIcon from "./assets/images/EmailIcon.svg?component";
+import "./PasswordlessLogin.css";
 
 const actionCodeSettings = {
-  url: "http://localhost:3000/",
+  url: "http://localhost:5173",
   handleCodeInApp: true,
 };
 
@@ -77,7 +78,7 @@ function LoginWithEmailLink() {
   };
 
   return (
-    <div>
+    <div className="PasswordlessWrapper">
       {!showInput && (
         <button
           className="transparent-black-button google-button"
@@ -103,7 +104,7 @@ function LoginWithEmailLink() {
           </button>
         </div>
       )}
-      {errorMessage && <div>{errorMessage}</div>}
+      {errorMessage && <div>There has been an error. Check your email.</div>}
     </div>
   );
 }

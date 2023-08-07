@@ -2,7 +2,6 @@
   display: flex;
   justify-content: space-evenly;
   padding: 0rem 1rem 5rem 1rem;
-  min-height: 50vh;
   padding-top: 2rem;
   padding-bottom: 2rem;
   margin-bottom: 2rem;
@@ -128,6 +127,8 @@ li{
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 2rem;
   border-radius: 0.4rem;
+  overflow: overlay;
+  height: 40rem;
 }
 
 @media (max-width: 768px) {

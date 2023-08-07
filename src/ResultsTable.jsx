@@ -35,8 +35,6 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
   const [selectedAccordionIndex, setSelectedAccordionIndex] = useState(null);
 
   useEffect(() => {
-    console.log("Products");
-    console.log(products);
     fetch(logo)
       .then((response) => response.blob())
       .then((blob) => {
@@ -163,10 +161,17 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
 
       const doc = new jsPDF();
 
-      doc.setFontSize(22);
-      doc.text(product.product, 10, 10);
+      let currentY = 10; // starting Y position for elements
+
+      // Add the logo to the PDF
+      if (logoBase64) {
+        doc.addImage(logoBase64, "PNG", 10, currentY, 40, 30);
+        currentY += 35; // adjust this to increase the space between the logo and the title
+      }
 
       doc.setFontSize(16);
+      doc.text(product.product, 10, currentY);
+      currentY += 20; // adjust this to increase the space between the title and table
 
       const headers = ["Heading", "Details"];
 
@@ -184,7 +189,7 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
       ];
 
       autoTable(doc, {
-        startY: 30,
+        startY: currentY,
         head: [headers],
         body: data,
         styles: { fillColor: [255, 255, 255], textColor: 20, fontSize: 10 },
@@ -204,6 +209,8 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
     } else {
       const doc = new jsPDF();
 
+      let currentY = 10; // starting Y position for elements
+
       let headers = [
         [
           "Product",
@@ -220,12 +227,24 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
         product.whereToFindClients,
       ]);
 
-      doc.setFontSize(22);
-      doc.text(title, 10, 10);
+      // Add the logo to the PDF
+      if (logoBase64) {
+        doc.addImage(logoBase64, "PNG", 10, currentY, 40, 30);
+        currentY += 35; // adjust this to increase the space between the logo and the title
+      }
+
+      doc.setFontSize(16);
+      const lines = doc.splitTextToSize(title, 180);
+      doc.text(lines, 10, currentY);
+
+      const lineHeight = 7; // Roughly the height for font size 22. Adjust if needed.
+      const titleHeight = lines.length * lineHeight;
+      currentY += titleHeight + 10; // Adding 10 as a gap between the title and table
+
       doc.setFontSize(16);
 
       autoTable(doc, {
-        startY: 30,
+        startY: currentY + titleHeight + 5, // Adding 10 as a gap between the title and table
         head: headers,
         body: data,
         styles: { fillColor: [255, 255, 255], textColor: 20, fontSize: 10 },

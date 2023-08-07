@@ -184,6 +184,10 @@ function BodyComponent() {
     if (!user) {
       setShowLoginDialog(true);
     } else {
+      if (user.emailVerified === false) {
+        alert("Please verify your email");
+        return;
+      }
       // Validate that the user has more than 0 credits.
       if (!checkCreditAmount()) {
         return;
