@@ -1,11 +1,5 @@
-import React, { useState, useContext, useEffect } from "react";
-import {
-  getAuth,
-  sendSignInLinkToEmail,
-  isSignInWithEmailLink,
-  signInWithEmailLink,
-} from "firebase/auth";
-import { UserContext } from "./App";
+import React, { useState } from "react";
+import { getAuth, sendSignInLinkToEmail } from "firebase/auth";
 import "./Buttons.css";
 import EmailIcon from "./assets/images/EmailIcon.svg?component";
 import "./PasswordlessLogin.css";
@@ -19,35 +13,7 @@ function LoginWithEmailLink() {
   const [showInput, setShowInput] = useState(false);
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const { setUser } = useContext(UserContext);
   const auth = getAuth();
-
-  useEffect(() => {
-    const performSignIn = async () => {
-      if (isSignInWithEmailLink(auth, window.location.href)) {
-        const emailFromStorage = window.localStorage.getItem("emailForSignIn");
-        if (emailFromStorage) {
-          try {
-            const result = await signInWithEmailLink(
-              auth,
-              emailFromStorage,
-              window.location.href
-            );
-            setUser(result.user);
-            window.localStorage.removeItem("emailForSignIn");
-            alert("User has been successfully logged in!");
-          } catch (error) {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            setErrorMessage(
-              `Error code: ${errorCode}, Error message: ${errorMessage}`
-            );
-          }
-        }
-      }
-    };
-    performSignIn();
-  }, [auth, setUser]);
 
   const sendLink = () => {
     sendSignInLinkToEmail(auth, email, actionCodeSettings)

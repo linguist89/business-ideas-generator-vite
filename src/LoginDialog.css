@@ -51,19 +51,22 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  background-color: #0e7490;
+  color: #000000;
+  background-color: #FFFFFF;
   position: absolute;
   top: 10px;
   right: 10px;
   cursor: pointer;
+  border: none;
 }
+
 .IconButton:hover {
-  background-color: #094C5F;
-  color: #FFFFFF;
+  background-color: #FFFFFF;
+  color: #000000;
 }
+
 .IconButton:focus {
-  box-shadow: 0 0 0 2px #0E7490;
+  box-shadow: none;
 }
 
 .Fieldset {

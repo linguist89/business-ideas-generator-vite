@@ -112,8 +112,11 @@ export default function PricingDialog({
         <Dialog.Overlay className="PricingDialogOverlay" />
         <Dialog.Content className="PricingDialogContent">
           <Dialog.Title className="PricingDialogTitle">
-            Pricing Plans
+            {purchaseTypeFilter === "recurring"
+              ? "Subscription Plans"
+              : "One-Time Payment Plans"}
           </Dialog.Title>
+          <p>Choose a plan below</p>
           {loading ? (
             <Spinner></Spinner>
           ) : (
@@ -152,7 +155,9 @@ export default function PricingDialog({
                         }
                       }}
                     >
-                      Subscribe
+                      {purchaseTypeFilter === "recurring"
+                        ? "Subscribe"
+                        : "Buy Now"}
                     </button>
                   </div>
                 ))}

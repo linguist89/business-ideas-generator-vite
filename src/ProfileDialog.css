@@ -1,8 +1,7 @@
 .profile-heading {
     font-size: 2rem;
-    text-align: center;
-    padding-bottom: 1rem;
-    color: #0E7490;
+    text-align: left;
+    color: #000000;
   }
   
   .ProfileDialogOverlay {
@@ -22,7 +21,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80%;
+    width: 50%;
     min-height: 85vh;
     animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
     padding: 2rem;
@@ -47,21 +46,22 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    background-color: #0e7490;
+    color: #000000;
+    background-color: #FFFFFF;
     position: absolute;
     top: 10px;
     right: 10px;
     cursor: pointer;
+    border: none;
   }
   
   .IconButton:hover {
-    background-color: #094C5F;
-    color: #FFFFFF;
+    background-color: #FFFFFF;
+    color: #000000;
   }
   
   .IconButton:focus {
-    box-shadow: 0 0 0 2px #0E7490;
+    box-shadow: none;
   }
   
   @keyframes overlayShow {

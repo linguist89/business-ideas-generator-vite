@@ -26,11 +26,17 @@ import {
 import exampleIdeas from "./exampleIdeas.json";
 import DeleteIcon from "./assets/images/DeleteIcon.svg";
 import { CreditContext } from "./App";
+import {
+  getAuth,
+  isSignInWithEmailLink,
+  signInWithEmailLink,
+} from "firebase/auth";
+import ConfirmationDelete from "./ConfirmationDelete";
 
 export const SelectedIdeaContext = React.createContext();
 
 function BodyComponent() {
-  const { user } = React.useContext(UserContext);
+  const { user, setUser } = React.useContext(UserContext);
   const { credits, setCredits } = React.useContext(CreditContext);
   const { showPricingDialog, setShowPricingDialog } =
     React.useContext(PricingContext);
@@ -42,6 +48,34 @@ function BodyComponent() {
   const [ideasLoading, setIdeasLoading] = React.useState(false);
   const [previousIdeas, setPreviousIdeas] = React.useState([]);
   const [selectedIdea, setSelectedIdea] = React.useState(null);
+  const auth = getAuth();
+
+  React.useEffect(() => {
+    const performSignIn = async () => {
+      if (isSignInWithEmailLink(auth, window.location.href)) {
+        const emailFromStorage = window.localStorage.getItem("emailForSignIn");
+        if (emailFromStorage) {
+          try {
+            const result = await signInWithEmailLink(
+              auth,
+              emailFromStorage,
+              window.location.href
+            );
+            setUser(result.user);
+            window.localStorage.removeItem("emailForSignIn");
+            alert("User has been successfully logged in!");
+          } catch (error) {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            setErrorMessage(
+              `Error code: ${errorCode}, Error message: ${errorMessage}`
+            );
+          }
+        }
+      }
+    };
+    performSignIn();
+  }, [auth, setUser]);
 
   React.useEffect(() => {
     if (user && previousIdeas.length > 0) {
@@ -307,18 +341,14 @@ function BodyComponent() {
                   >
                     {idea.data.focus}
                   </button>
-                  <button
-                    disabled={ideasLoading}
-                    className="DeleteButton"
-                    onClick={() => {
+                  <ConfirmationDelete
+                    onDeleteConfirm={() => {
                       deleteIdeaFromFirebase(idea.id);
                       setPreviousIdeas(
                         previousIdeas.filter((i) => i.id !== idea.id)
                       );
                     }}
-                  >
-                    <img src={DeleteIcon} alt="Delete Icon"></img>
-                  </button>
+                  />
                 </div>
               ))
             ) : user ? (

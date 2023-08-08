@@ -1,20 +1,24 @@
-import React from 'react';
-import * as Dialog from '@radix-ui/react-dialog';
-import { Cross2Icon } from '@radix-ui/react-icons';
-import './LoginDialog.css';
-import './Buttons.css';
-import GoogleAuthentication from './GoogleAuthentication';
-import LoginWithEmailLink from './PasswordlessLogin';
-import PasswordSignupAuthentication from './PasswordSignupAuthentication';
-import PasswordLoginAuthentication from './PasswordLoginAuthentication';
-import OrLine from './OrLine';
-import { UserContext } from './App';
+import React from "react";
+import * as Dialog from "@radix-ui/react-dialog";
+import { Cross2Icon } from "@radix-ui/react-icons";
+import "./LoginDialog.css";
+import "./Buttons.css";
+import GoogleAuthentication from "./GoogleAuthentication";
+import LoginWithEmailLink from "./PasswordlessLogin";
+import PasswordSignupAuthentication from "./PasswordSignupAuthentication";
+import PasswordLoginAuthentication from "./PasswordLoginAuthentication";
+import OrLine from "./OrLine";
+import { UserContext } from "./App";
 
 export const SelectedIdeaContext = React.createContext();
 
 function LoginDialog({ open, onClose }) {
   const { user } = React.useContext(UserContext);
   const [showSignup, setShowSignup] = React.useState(false);
+
+  const handleForgotPassword = () => {
+    // Firebase forgot password
+  };
 
   React.useEffect(() => {
     if (user) {
@@ -42,21 +46,34 @@ function LoginDialog({ open, onClose }) {
               <PasswordSignupAuthentication />
             ) : (
               <p>
-                Don't have an account?{' '}
-                <button className="link-button" onClick={() => setShowSignup(true)}>
+                Don't have an account?{" "}
+                <button
+                  className="link-button"
+                  onClick={() => setShowSignup(true)}
+                >
                   Signup here
                 </button>
               </p>
             )}
             {showSignup && (
               <p>
-                Already have an account?{' '}
-                <button className="link-button" onClick={() => setShowSignup(false)}>
+                Already have an account?{" "}
+                <button
+                  className="link-button"
+                  onClick={() => setShowSignup(false)}
+                >
                   Login instead
                 </button>
               </p>
             )}
           </div>
+          <p>
+            {" "}
+            Have an account, but{" "}
+            <button className="link-button" onClick={handleForgotPassword}>
+              forgot password?
+            </button>
+          </p>
           <Dialog.Close asChild>
             <button className="IconButton" aria-label="Close">
               <Cross2Icon />
@@ -69,4 +86,3 @@ function LoginDialog({ open, onClose }) {
 }
 
 export default LoginDialog;
-

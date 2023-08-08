@@ -202,3 +202,22 @@
     margin-top: 0.5rem;
   }
   
+  .DeleteButton{
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding-top: 0.8rem;
+  }
+
+  .DeleteButton:hover {
+    transform: scale(1.1);
+  }
+
+  .DeleteBackgroundRed {
+    background-color: #bc3c3c;
+  }
+
+  .DeleteBackgroundRed:hover, .DeleteBackgroundRed:focus {
+    background-color: #a53535;
+    border-color: #a53535;
+  }
