@@ -3,9 +3,6 @@ import { db } from "./Firebase.jsx";
 import { doc, setDoc, collection, addDoc } from "firebase/firestore";
 
 export async function getBusinessIdeasOpenAITest(focus, trends, cv) {
-  console.log(focus);
-  console.log(trends);
-  console.log(cv);
   let question =
     "Give me a random topic word then use that word as the basis for the following: I'm looking to start a business and I need product or service ideas based on my cover letter. I have provided a focus (that which I want as my main purpose in the business), trends (the current business landscape where I live) and cover letter (the skills and competencies that I bring to the table). Give me product ideas, potential clients and where to find these clients based on these factors.";
   let output_instructions =

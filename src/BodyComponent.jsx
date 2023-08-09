@@ -213,6 +213,27 @@ function BodyComponent() {
     return true;
   }
 
+  async function callNetlifyFunction(focus, trends, cv) {
+    try {
+      const response = await fetch("/.netlify/functions/serverCalls", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ focus, trends, cv }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Fetch error:", error);
+      throw error; // Propagate the error for further handling
+    }
+  }
+
   async function businessIdeasOpenAITest() {
     let startTime = performance.now();
     if (!user) {
@@ -236,7 +257,7 @@ function BodyComponent() {
       let results;
       let parsedResponse;
       try {
-        results = await getBusinessIdeasOpenAITest(
+        results = await callNetlifyFunction(
           checkedFocus,
           checkedTrends,
           checkedCv
@@ -268,7 +289,7 @@ function BodyComponent() {
         console.log("parsedResponse: ", parsedResponse);
       } catch (error) {
         console.log(
-          "Error in getBusinessIdeasOpenAITest or getContextInfoOpenAITest or getStartingInfoOpenAITest: ",
+          "Error in callNetlifyFunction or getContextInfoOpenAITest or getStartingInfoOpenAITest: ",
           error.message
         );
       }
