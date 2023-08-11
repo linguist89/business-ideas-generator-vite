@@ -187,15 +187,12 @@ export async function updateFirebaseWithTokens(
   console.log(completion);
   console.log("TODO: Update Firebase with tokens used");
   const completion_data = {
-    model: completion.data.model,
-    //model: "gpt-3.5-turbo",
-    //This needs to be fixed completion isn't the completion, but rather the results
-    usage: completion.data.usage,
+    model: completion.model,
+    usage: completion.usage,
     timestamp: new Date(),
   };
-  const newTotal =
-    credits - Math.round(completion.data.usage.total_tokens / 10);
-  setCredits(newTotal); // Deduct the usage from total credits
+  const newTotal = credits - Math.round(completion.usage.total_tokens / 10);
+  setCredits(newTotal);
 
   const userCreditsRef = doc(db, "customers", user.uid, "credits", "total");
   await setDoc(userCreditsRef, { amount: newTotal }, { merge: true });

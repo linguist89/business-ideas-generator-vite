@@ -32,6 +32,6 @@ function GoogleAuthentication() {
       }
     </div>
   );
-};
+}
 
 export default GoogleAuthentication;

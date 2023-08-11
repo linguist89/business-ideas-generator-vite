@@ -3,7 +3,7 @@ const { Configuration, OpenAIApi } = require("openai");
 
 // Configure OpenAI
 const configuration = new Configuration({
-    apiKey: import.meta.env.VITE_REACT_APP_Open_AI_api_key,  // Use process.env for Netlify
+    apiKey: process.env.VITE_REACT_APP_Open_AI_api_key,  // Use process.env for Netlify
 });
 const openai = new OpenAIApi(configuration);
 
@@ -49,4 +49,4 @@ export async function handler(event, context) {
             }
         }
     }
-};
+}

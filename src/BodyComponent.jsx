@@ -144,6 +144,7 @@ function BodyComponent() {
       console.log("Documents successfully written!");
       return newIdeaDoc.id;
     } catch (error) {
+      console.log("Something went wrong when writing documents: ", searchData);
       console.error("Error writing documents: ", error);
     }
   }
@@ -213,15 +214,18 @@ function BodyComponent() {
     return true;
   }
 
-  async function callNetlifyFunction(focus, trends, cv) {
+  async function getBusinessIdeas(focus, trends, cv) {
     try {
-      const response = await fetch("/.netlify/functions/serverCalls", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ focus, trends, cv }),
-      });
+      const response = await fetch(
+        "https://europe-west3-home-page-authentication.cloudfunctions.net/getBusinessIdeas",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ focus, trends, cv }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -230,7 +234,7 @@ function BodyComponent() {
       return await response.json();
     } catch (error) {
       console.error("Fetch error:", error);
-      throw error; // Propagate the error for further handling
+      throw error;
     }
   }
 
@@ -257,14 +261,15 @@ function BodyComponent() {
       let results;
       let parsedResponse;
       try {
-        results = await callNetlifyFunction(
+        results = await getBusinessIdeas(
           checkedFocus,
           checkedTrends,
           checkedCv
         );
         await updateFirebaseWithTokens(results, credits, setCredits, user);
 
-        let response = results.data.choices[0].message.content;
+        let response = results.choices[0].message.content;
+        console.log("response: ", response);
         parsedResponse = JSON.parse(response);
         console.log("parsedResponse: ", parsedResponse);
         // Call addContextInfoToIdeas to add additional information to each idea
