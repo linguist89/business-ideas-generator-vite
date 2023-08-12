@@ -1,32 +1,185 @@
 /* eslint-disable require-jsdoc */
+/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const {Configuration, OpenAIApi} = require("openai");
+const {SecretManagerServiceClient} = require("@google-cloud/secret-manager");
+const client = new SecretManagerServiceClient();
 
 admin.initializeApp();
-
 const cors = require("cors")({origin: true});
 
-const configuration = new Configuration({
-  apiKey: "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",
-});
-const openai = new OpenAIApi(configuration);
+let openaiApiKey; // This will store the API key retrieved from Secret Manager
+let openai;
 
+// Fetching the secret (OpenAI API Key) from Google Cloud Secret Manager
+async function getOpenAIApiKey() {
+  const request = {
+    name: "projects/home-page-authentication/secrets/OPENAI_API_KEY/versions/latest",
+  };
+  const response = await client.accessSecretVersion(request);
+  return response[0].payload.data.toString("utf8");
+}
 
-/* function stringifySafe(obj) {
-  const cache = new Set();
-  return JSON.stringify(obj, (key, value) => {
-    if (typeof value === "object" && value !== null) {
-      if (cache.has(value)) {
-        // Duplicate reference found, discard key
-        return;
-      }
-      // Store value in our set
-      cache.add(value);
-    }
-    return value;
+// Fetch the API key only once when the cloud function initializes
+getOpenAIApiKey().then((apiKey) => {
+  openaiApiKey = apiKey;
+  // Initialize OpenAI with the retrieved API key
+  const configuration = new Configuration({
+    apiKey: openaiApiKey,
   });
-}*/
+  openai = new OpenAIApi(configuration);
+}).catch((error) => {
+  console.error("Error fetching OpenAI API key from Secret Manager:", error);
+});
+
+exports.getStartingInfo = functions
+    .region("europe-west3")
+    .https
+    .onRequest(async (req, res) => {
+      cors(req, res, async () => {
+        const {productString} = req.body;
+        let retryCount = req.body.retryCount || 0;
+        functions.logger.log("getStartingInfo called.");
+        try {
+          functions.logger.log("getStartingInfo called. productString: ", productString);
+          const question =
+          "From the idea above, give the outline" +
+          "in the following structure. The output" +
+          "should be a dictionary as is described" +
+          "below:\n{\n\"Creating the product\": \"Quickest" +
+          "way to create it in 3 sentences\",\n\"Finding" +
+          "customers\": \"Quickest way to validate the market" +
+          "in 3 sentences\",\n\"Selling product\": \"Easiest" +
+          "way to sell the product to those customers in 3 sentences\"\n}";
+          functions.logger.log("getStartingInfo called. question: ", question);
+          const content = await openai.createChatCompletion({
+            model: "gpt-3.5-turbo",
+            messages: [
+              {role: "system", content: "You are a knowledgeable assistant."},
+              {role: "user", content: `${question}\n${productString}`},
+            ],
+            temperature: 1,
+          });
+          functions.logger.log("getStartingInfo called. content: ", content);
+          const dictionaryHowToRegex = /\{\s*"Creating the product":\s*".*?",\s*"Finding customers":\s*".*?",\s*"Selling product":\s*".*?"\s*\}/;
+          const match = content.data.choices[0].message.content.match(dictionaryHowToRegex);
+          functions.logger.log("getStartingInfo called. match: ", match);
+          if (match) {
+            const parsedContent = JSON.parse(match[0]);
+
+            if (
+              parsedContent &&
+            typeof parsedContent === "object" &&
+            parsedContent["Creating the product"] &&
+            parsedContent["Finding customers"] &&
+            parsedContent["Selling product"]
+            ) {
+              res.status(200).send(parsedContent);
+            } else {
+              console.log("Parsed content: ", parsedContent);
+              throw new Error("Parsed content does not conform to the expected structure");
+            }
+          } else {
+            console.log("Invalid content: ", content);
+            throw new Error("Content does not conform to the expected structure");
+          }
+        } catch (error) {
+          console.log("Error: ", error.message);
+          if (retryCount < 5) {
+            console.log("Retrying... Attempt number: ", retryCount + 1);
+            retryCount++;
+            req.body.retryCount = retryCount;
+            exports.getStartingInfo(req, res);
+          } else {
+            console.log("Maximum retry attempts exceeded.");
+            res.status(500).send({message: error.message});
+          }
+        }
+      });
+    });
+
+exports.getContextInfo = functions
+    .region("europe-west3")
+    .https
+    .onRequest(async (req, res) => {
+      cors(req, res, async () => {
+        const {businessIdeaString} = req.body;
+        let retryCount = req.body.retryCount || 0;
+
+        try {
+          const question =
+          "From the idea above, give the outline" +
+          "in the following structure. The output" +
+          "should be a dictionary as is described" +
+          "below:\n{\n\"Consumer Pain Point\": \"Biggest" +
+          "consumer pain points in about 3 sentences\",\n" +
+          "\"Effort\": \"Biggest ways to minimize the" +
+          "consumer's effort in about 3 sentences\",\n\"Time\":" +
+          "\"Biggest ways to minimize the time the consumer has" +
+          "to spend to get the product in about 3 sentences\"\n}";
+          const content = await openai.createChatCompletion({
+            model: "gpt-3.5-turbo",
+            messages: [
+              {role: "system", content: "You are a knowledgeable assistant."},
+              {role: "user", content: `${question}\n${businessIdeaString}`},
+            ],
+            temperature: 1,
+          });
+
+          const dictionaryContentRegex = new RegExp(
+              "\\{\\s*" +
+          "\"Consumer Pain Point\":\\s*\".*?\",\\s*" +
+          "\"Effort\":\\s*\".*?\",\\s*" +
+          "\"Time\":\\s*\".*?\"\\s*" +
+          "\\}",
+          );
+
+          const match = content.data.choices[0]
+              .message
+              .content
+              .match(dictionaryContentRegex);
+
+
+          if (match) {
+            const parsedContent = JSON.parse(match[0]);
+
+            if (
+              parsedContent &&
+            typeof parsedContent === "object" &&
+            parsedContent["Consumer Pain Point"] &&
+            parsedContent["Effort"] &&
+            parsedContent["Time"]
+            ) {
+              res.status(200).send(parsedContent);
+            } else {
+              console.log("Parsed content: ", parsedContent);
+              throw new Error(
+                  "Parsed content does not conform to the expected structure",
+              );
+            }
+          } else {
+            console.log("Invalid content: ", content);
+            throw new Error(
+                "Content does not conform to the expected structure",
+            );
+          }
+        } catch (error) {
+          console.log("Error: ", error.message);
+          if (retryCount < 5) {
+            console.log("Retrying... Attempt number: ", retryCount + 1);
+            retryCount++;
+            // Re-run the function with an increased retryCount
+            req.body.retryCount = retryCount;
+            exports.getContextInfo(req, res);
+          } else {
+            console.log("Maximum retry attempts exceeded.");
+            res.status(500).send({message: error.message});
+          }
+        }
+      });
+    });
 
 
 exports.getBusinessIdeas = functions.region("europe-west3")

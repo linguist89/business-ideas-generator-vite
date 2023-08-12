@@ -2,12 +2,7 @@ import "./BodyComponent.css";
 import "./index.css";
 import CustomTextarea from "./CustomTextarea";
 import React from "react";
-import {
-  getBusinessIdeasOpenAITest,
-  getContextInfoOpenAITest,
-  getStartingInfoOpenAITest,
-  updateFirebaseWithTokens,
-} from "./HelperFunctions";
+import { updateFirebaseWithTokens } from "./HelperFunctions";
 import LandingImage from "./assets/images/lighbulb_shadow.png";
 import ResultsTable from "./ResultsTable";
 import Spinner from "./Spinner";

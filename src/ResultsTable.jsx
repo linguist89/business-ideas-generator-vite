@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./ResultsTable.css";
-import {
-  getContextInfoOpenAITest,
-  getStartingInfoOpenAITest,
-  updateFirebaseWithTokens,
-} from "./HelperFunctions";
 import ContextDialog from "./ContextDialog";
 import HowToDialog from "./HowToDialog";
 import logo from "./assets/images/site_logo.png";
@@ -54,41 +49,73 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
     if (!user) {
       setShowLoginDialog(true);
     } else {
-      if (howToStart[index] && howToStart[index]["Creating the product"]) {
-        console.log(JSON.stringify(howToStart[index]));
+      console.log("Start Button clicked");
+
+      // Check if the product already has the 'starting' information
+      if (
+        product["Creating the product"] &&
+        product["Finding customers"] &&
+        product["Selling product"]
+      ) {
+        console.log(
+          `${product["Creating the product"]} ${product["Finding customers"]} ${product["Selling product"]}`
+        );
       } else {
         setStartLoading((prevStartLoading) => ({
           ...prevStartLoading,
           [index]: true,
         }));
-        try {
-          const howToResults = await getStartingInfoOpenAITest(product);
-          console.log("Results");
-          console.log(howToResults);
 
-          setProducts((prevHowTo) => {
-            const newHowTo = [...prevHowTo];
-            newHowTo[index] = {
-              ...newHowTo[index],
-              ...howToResults,
+        try {
+          const productString = Object.entries(product)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join("\n");
+          console.log("Before calling getStartingInfo");
+          const response = await fetch(
+            "https://europe-west3-home-page-authentication.cloudfunctions.net/getStartingInfo",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                productString: productString,
+              }),
+            }
+          );
+          console.log("After calling getStartingInfo");
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const startResults = await response.json();
+
+          // Update local state
+          setProducts((prevStarts) => {
+            const newStarts = [...prevStarts];
+            newStarts[index] = {
+              ...newStarts[index],
+              "Creating the product": startResults["Creating the product"],
+              "Finding customers": startResults["Finding customers"],
+              "Selling product": startResults["Selling product"],
             };
-            return newHowTo;
+            return newStarts;
           });
 
           const ideaDoc = doc(db, "customers", user.uid, "ideas", selectedIdea);
           await updateDoc(ideaDoc, {
             ideas: products.map((p, i) =>
-              i === index ? { ...p, ...howToResults } : p
+              i === index ? { ...p, ...startResults } : p
             ),
           });
 
-          // Assuming the 'updateFirebaseWithTokens' function aligns with the new results
-          await updateFirebaseWithTokens(
-            howToResults,
+          // If necessary, handle updating Firebase tokens (like you commented out in handleButtonClick)
+          /*await updateFirebaseWithTokens(
+            startResults,
             credits,
             setCredits,
             user
-          );
+          );*/
         } catch (error) {
           console.error(error);
         } finally {
@@ -105,6 +132,7 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
     if (!user) {
       setShowLoginDialog(true);
     } else {
+      console.log("Context Button clicked");
       if (
         product["Consumer Pain Point"] &&
         product["Effort"] &&
@@ -116,7 +144,29 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
       } else {
         setLoading((prevLoading) => ({ ...prevLoading, [index]: true }));
         try {
-          const contextResults = await getContextInfoOpenAITest(product);
+          const businessIdeaString = Object.entries(product)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join("\n");
+          const response = await fetch(
+            "https://europe-west3-home-page-authentication.cloudfunctions.net/getContextInfo",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                businessIdeaString: businessIdeaString,
+              }),
+            }
+          );
+          console.log(`HTTP response status: ${response.status}`);
+          console.log(response);
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const contextResults = await response.json();
+
           console.log("Raw results:");
           console.log(contextResults);
 
@@ -137,12 +187,12 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
               i === index ? { ...p, ...contextResults } : p
             ),
           });
-          await updateFirebaseWithTokens(
+          /*await updateFirebaseWithTokens(
             contextResults,
             credits,
             setCredits,
             user
-          );
+          );*/
         } catch (error) {
           console.error(error);
         } finally {
