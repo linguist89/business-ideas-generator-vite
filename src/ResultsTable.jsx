@@ -325,7 +325,7 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
       return (
         <button
           onClick={() => handleStartButtonClick(product, index)}
-          className="solid-card-button"
+          className="transparent-green-button"
         >
           Find out how to start
         </button>
@@ -358,7 +358,7 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
       return (
         <button
           onClick={() => handleButtonClick(product, index)}
-          className="solid-card-button"
+          className="transparent-green-button"
         >
           Get Offering Optimization
         </button>

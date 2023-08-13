@@ -58,7 +58,7 @@ function BodyComponent() {
             );
             setUser(result.user);
             window.localStorage.removeItem("emailForSignIn");
-            alert("User has been successfully logged in!");
+            alert("You have been successfully logged in!");
           } catch (error) {
             const errorCode = error.code;
             const errorMessage = error.message;
@@ -131,74 +131,29 @@ function BodyComponent() {
     });
   };
 
+  async function logErrorToFirestore(errorMsg) {
+    try {
+      const logsCollectionRef = collection(db, "error_logs");
+      const newLogDoc = doc(logsCollectionRef);
+      await setDoc(newLogDoc, {
+        message: errorMsg,
+        timestamp: new Date(),
+      });
+    } catch (error) {
+      await logErrorToFirestore(`Failed to write error to Firestore: ${error}`);
+    }
+  }
+
   async function saveIdeasToFirebase(searchData) {
     try {
       const userIdeasRef = collection(db, "customers", user.uid, "ideas");
       const newIdeaDoc = doc(userIdeasRef);
       await setDoc(newIdeaDoc, searchData);
-      console.log("Documents successfully written!");
       return newIdeaDoc.id;
     } catch (error) {
       console.log("Something went wrong when writing documents: ", searchData);
-      console.error("Error writing documents: ", error);
+      await logErrorToFirestore(`Error writing documents: ${error}`);
     }
-  }
-
-  async function addContextInfoToIdeas(parsedResponse) {
-    // Loop through all ideas in the parsed response.
-    for (let i = 0; i < parsedResponse.length; i++) {
-      // For each idea, get the additional context information.
-      let additionalInfo;
-      try {
-        additionalInfo = await getContextInfoOpenAITest(parsedResponse[i]);
-      } catch (error) {
-        console.log(
-          "Error in getContextInfoOpenAITest, idea index: ",
-          i,
-          ", Error: ",
-          error.message
-        );
-        continue;
-      }
-      // Add the additional context information to the idea.
-      parsedResponse[i] = {
-        ...parsedResponse[i],
-        "Consumer Pain Point": additionalInfo["Consumer Pain Point"],
-        Effort: additionalInfo["Effort"],
-        Time: additionalInfo["Time"],
-      };
-    }
-    // Return the updated parsed response.
-    return parsedResponse;
-  }
-
-  async function addStartingInfoToIdeas(parsedResponse) {
-    // Loop through all ideas in the parsed response.
-    for (let i = 0; i < parsedResponse.length; i++) {
-      // For each idea, get the additional context information.
-      let additionalInfo;
-      try {
-        additionalInfo = await getStartingInfoOpenAITest(parsedResponse[i]);
-      } catch (error) {
-        console.log(
-          "Error in getStartingInfoOpenAITest, idea index: ",
-          i,
-          ", Error: ",
-          error.message
-        );
-        continue;
-      }
-      // Add the additional context information to the idea.
-      parsedResponse[i] = {
-        ...parsedResponse[i],
-        // Add the starting info to the idea.
-        "Creating the product": additionalInfo["Creating the product"],
-        "Finding customers": additionalInfo["Finding customers"],
-        "Selling product": additionalInfo["Selling product"],
-      };
-    }
-    // Return the updated parsed response.
-    return parsedResponse;
   }
 
   function checkCreditAmount() {
@@ -228,12 +183,12 @@ function BodyComponent() {
 
       return await response.json();
     } catch (error) {
-      console.error("Fetch error:", error);
+      await logErrorToFirestore(`Fetch error: ${error}`);
       throw error;
     }
   }
 
-  async function businessIdeasOpenAITest() {
+  async function businessIdeasClick() {
     let startTime = performance.now();
     if (!user) {
       setShowLoginDialog(true);
@@ -416,7 +371,7 @@ function BodyComponent() {
             <div className="BodyComponentButtonDiv">
               <button
                 className="solid-card-button"
-                onClick={businessIdeasOpenAITest}
+                onClick={businessIdeasClick}
                 disabled={ideasLoading}
               >
                 {ideasLoading ? "Generating..." : "Generate Business Ideas"}

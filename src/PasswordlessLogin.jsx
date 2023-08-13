@@ -13,6 +13,7 @@ function LoginWithEmailLink() {
   const [showInput, setShowInput] = useState(false);
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [linkSent, setLinkSent] = useState(false); // New state variable
   const auth = getAuth();
 
   const sendLink = () => {
@@ -21,6 +22,7 @@ function LoginWithEmailLink() {
         window.localStorage.setItem("emailForSignIn", email);
         setShowInput(false);
         setEmail("");
+        setLinkSent(true); // Set the linkSent to true
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -44,8 +46,8 @@ function LoginWithEmailLink() {
   };
 
   return (
-    <div className="PasswordlessWrapper">
-      {!showInput && (
+    <div>
+      {!showInput && !linkSent && (
         <button
           className="transparent-black-button google-button"
           onClick={handleClick}
@@ -55,7 +57,7 @@ function LoginWithEmailLink() {
         </button>
       )}
       {showInput && (
-        <div>
+        <div className="PasswordlessWrapper">
           <input
             type="email"
             value={email}
@@ -63,13 +65,15 @@ function LoginWithEmailLink() {
             placeholder="Email Address"
           />
           <button
-            className="solid-card-button google-button button-top-padding"
+            className="solid-card-button button-top-padding"
             onClick={handleClick}
           >
             Send link
           </button>
         </div>
       )}
+      {linkSent && <div>Check your email for login link.</div>}{" "}
+      {/* Render this message when link is sent */}
       {errorMessage && <div>There has been an error. Check your email.</div>}
     </div>
   );
