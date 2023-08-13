@@ -417,10 +417,13 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
                       {renderContextDialog(product, index)}
                       {renderHowToDialog(product, index)}
                       <button
-                        onClick={() => singleIdeaPdf(product)}
-                        className="transparent-green-button"
+                        className="SinglePDF solid-card-button PDFButton"
+                        onClick={() => {
+                          singleIdeaPdf(product);
+                        }}
                       >
-                        Download Idea
+                        <img src={PdfIcon} alt="Pdf Icon"></img>
+                        Download PDF for this idea
                       </button>
                     </div>
                   </td>
