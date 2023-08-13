@@ -41,9 +41,9 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
       });
   }, []);
 
-  useEffect(() => {
+  /*useEffect(() => {
     console.log(products);
-  }, []);
+  }, []);*/
 
   async function handleStartButtonClick(product, index) {
     if (!user) {
@@ -387,10 +387,10 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
             <th>More Info</th>
           </tr>
         </thead>
-        <tbody key={Math.random()}>
+        <tbody>
           {products.map((product, index) => (
-            <>
-              <tr key={index}>
+            <React.Fragment key={index}>
+              <tr>
                 <td>{product["product"]}</td>
                 <td>{product["description"]}</td>
                 <td>{product["potentialClients"]}</td>
@@ -411,29 +411,22 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
                 </td>
               </tr>
               {selectedAccordionIndex === index && (
-                <tr key={`accordion-${index}`}>
+                <tr key={`details-${index}`}>
                   <td colSpan="5">
-                    <div className="AccordionMenuWrapper">
-                      <div className="MoreInfoWrapper">
-                        <div>{renderHowToDialog(product, index)}</div>
-                        <div>{renderContextDialog(product, index)}</div>
-                      </div>
-                      <div className="SinglePDFWrapper">
-                        <button
-                          className="SinglePDF solid-card-button PDFButton"
-                          onClick={() => {
-                            singleIdeaPdf(product);
-                          }}
-                        >
-                          <img src={PdfIcon} alt="Pdf Icon"></img>
-                          Download PDF for this idea
-                        </button>
-                      </div>
+                    <div className="additional-details">
+                      {renderContextDialog(product, index)}
+                      {renderHowToDialog(product, index)}
+                      <button
+                        onClick={() => singleIdeaPdf(product)}
+                        className="transparent-green-button"
+                      >
+                        Download Idea
+                      </button>
                     </div>
                   </td>
                 </tr>
               )}
-            </>
+            </React.Fragment>
           ))}
         </tbody>
       </table>
