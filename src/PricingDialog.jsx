@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import { UserContext } from "./App";
 import Spinner from "./Spinner";
+import PricingImage from "./assets/images/gold_coins_120_120.png";
 
 export default function PricingDialog({
   open,
@@ -116,7 +117,7 @@ export default function PricingDialog({
               ? "Subscription Plans"
               : "One-Time Payment Plans"}
           </Dialog.Title>
-          <p>Choose a plan below</p>
+          <p></p>
           {loading ? (
             <Spinner></Spinner>
           ) : (
@@ -126,6 +127,9 @@ export default function PricingDialog({
                   <div className="PricingPlan" key={Math.random()}>
                     <div className="PlainInfoWrapper">
                       <h2 className="PlanTitle">{productData.name}</h2>
+                      <h3 className="PlanDescription">
+                        {productData.description}
+                      </h3>
                       <p className="PlanPrice">
                         {purchaseTypeFilter === "recurring"
                           ? `$${
@@ -135,6 +139,7 @@ export default function PricingDialog({
                               productData.prices.priceData.unit_amount / 100
                             }`}
                       </p>
+                      <img src={PricingImage} alt="Pricing Image"></img>
                     </div>
                     <button
                       className="solid-card-button"

@@ -5,6 +5,10 @@
   all: unset;
 }
 
+.PlanDescription{
+  font-weight: lighter;
+}
+
 .PricingDialogOverlay {
   background-color: #00000099;
   position: fixed;
@@ -36,7 +40,6 @@
   justify-content: space-between;
   gap: 2rem;
   height: 30em;
-  overflow-y: scroll;
 }
 
 .PricingPlan {
@@ -52,7 +55,7 @@
 }
 
 .PlanTitle {
-  font-size: 1.4rem;
+  font-size: 2rem;
   font-weight: bold;
   margin-bottom: 1rem;
 }
@@ -109,6 +112,7 @@
 
   .PricingTable {
     flex-direction: column;
+    overflow-y: scroll;
   }
 
   .PricingPlan {
