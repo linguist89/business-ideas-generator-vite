@@ -36,6 +36,7 @@
   justify-content: space-between;
   gap: 2rem;
   height: 30em;
+  overflow-y: scroll;
 }
 
 .PricingPlan {
@@ -106,8 +107,13 @@
     padding: 1rem;
   }
 
+  .PricingTable {
+    flex-direction: column;
+  }
+
   .PricingPlan {
-    max-width: 100%;
+    width: auto;
+
   }
 
   .PlanTitle {

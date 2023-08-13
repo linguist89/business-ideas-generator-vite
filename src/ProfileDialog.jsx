@@ -29,23 +29,25 @@ function ProfileDialog({ open, onClose }) {
       <Dialog.Portal>
         <Dialog.Overlay className="ProfileDialogOverlay" />
         <Dialog.Content className="ProfileDialogContent">
-          <h1 className="profile-heading">Profile</h1>
-          {user && (
-            <div>
-              {user.emailVerified ? (
-                <>
-                  <p>{`${
-                    user.displayName ? user.displayName : user.email
-                  } (${credits} credits remaining)`}</p>
-                  <p>{`${userPlan} renewal date: ${renewalDate}`}</p>
-                </>
-              ) : (
-                <>
-                  <p>Please verify your email</p>
-                </>
-              )}
-            </div>
-          )}
+          <div>
+            <h1 className="profile-heading">Profile</h1>
+            {user && (
+              <div>
+                {user.emailVerified ? (
+                  <>
+                    <p>{`${
+                      user.displayName ? user.displayName : user.email
+                    } (${credits} credits remaining)`}</p>
+                    <p>{`${userPlan} renewal date: ${renewalDate}`}</p>
+                  </>
+                ) : (
+                  <>
+                    <p>Please verify your email</p>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
           <div className="profile-information">
             <button className="solid-card-button" onClick={() => signOut(auth)}>
               Logout
