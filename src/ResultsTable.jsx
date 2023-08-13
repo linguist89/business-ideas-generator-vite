@@ -411,20 +411,24 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
                 </td>
               </tr>
               {selectedAccordionIndex === index && (
-                <tr key={`details-${index}`}>
+                <tr key={`accordion-${index}`}>
                   <td colSpan="5">
-                    <div className="additional-details">
-                      {renderContextDialog(product, index)}
-                      {renderHowToDialog(product, index)}
-                      <button
-                        className="SinglePDF solid-card-button PDFButton"
-                        onClick={() => {
-                          singleIdeaPdf(product);
-                        }}
-                      >
-                        <img src={PdfIcon} alt="Pdf Icon"></img>
-                        Download PDF for this idea
-                      </button>
+                    <div className="AccordionMenuWrapper">
+                      <div className="MoreInfoWrapper">
+                        <div>{renderHowToDialog(product, index)}</div>
+                        <div>{renderContextDialog(product, index)}</div>
+                      </div>
+                      <div className="SinglePDFWrapper">
+                        <button
+                          className="SinglePDF solid-card-button PDFButton"
+                          onClick={() => {
+                            singleIdeaPdf(product);
+                          }}
+                        >
+                          <img src={PdfIcon} alt="Pdf Icon"></img>
+                          Download PDF for this idea
+                        </button>
+                      </div>
                     </div>
                   </td>
                 </tr>
