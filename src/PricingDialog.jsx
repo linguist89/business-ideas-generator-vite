@@ -27,6 +27,7 @@ export default function PricingDialog({
   const { user } = React.useContext(UserContext);
   const [unsubscribe, setUnsubscribe] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
+  const [hasSubscription, setHasSubscription] = React.useState(false);
 
   async function stripePayment(priceId, mode) {
     let data = {
@@ -54,6 +55,24 @@ export default function PricingDialog({
 
     setUnsubscribe(() => unsubscribeSnapshot);
   }
+
+  React.useEffect(() => {
+    const fetchSubscription = async () => {
+      const subscriptionQuery = collection(
+        db,
+        "customers",
+        user.uid,
+        "subscriptions"
+      );
+      const subscriptionSnapshot = await getDocs(subscriptionQuery);
+      if (!subscriptionSnapshot.empty) {
+        setHasSubscription(true);
+      }
+    };
+    if (user) {
+      fetchSubscription();
+    }
+  }, [user]);
 
   React.useEffect(() => {
     if (user) {
@@ -143,6 +162,9 @@ export default function PricingDialog({
                     </div>
                     <button
                       className="solid-card-button"
+                      disabled={
+                        hasSubscription && purchaseTypeFilter === "recurring"
+                      }
                       onClick={() => {
                         if (purchaseTypeFilter === "recurring") {
                           setLoading(true);
@@ -161,7 +183,9 @@ export default function PricingDialog({
                       }}
                     >
                       {purchaseTypeFilter === "recurring"
-                        ? "Subscribe"
+                        ? hasSubscription
+                          ? "Subscribed"
+                          : "Subscribe"
                         : "Buy Now"}
                     </button>
                   </div>

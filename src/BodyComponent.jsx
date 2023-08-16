@@ -19,7 +19,6 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import exampleIdeas from "./exampleIdeas.json";
-import DeleteIcon from "./assets/images/DeleteIcon.svg";
 import { CreditContext } from "./App";
 import {
   getAuth,
@@ -219,14 +218,7 @@ function BodyComponent() {
         await updateFirebaseWithTokens(results, credits, setCredits, user);
 
         let response = results.choices[0].message.content;
-        console.log("response: ", response);
         parsedResponse = JSON.parse(response);
-        console.log("parsedResponse: ", parsedResponse);
-        // Call addContextInfoToIdeas to add additional information to each idea
-        //parsedResponse = await addContextInfoToIdeas(parsedResponse);
-
-        // Call addStartingInfoToIdeas to add additional information to each idea
-        //parsedResponse = await addStartingInfoToIdeas(parsedResponse);
 
         // Add empty context info and starting info to each idea
         parsedResponse = parsedResponse.map((idea) => {

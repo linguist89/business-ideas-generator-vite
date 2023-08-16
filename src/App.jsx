@@ -1,5 +1,6 @@
 import "./App.css";
 import Header from "./Header";
+import Footer from "./Footer";
 import BodyComponent from "./BodyComponent";
 import React from "react";
 
@@ -21,6 +22,7 @@ function App() {
           <div className="App">
             <Header></Header>
             <BodyComponent></BodyComponent>
+            <Footer></Footer>
           </div>
         </CreditContext.Provider>
       </UserContext.Provider>
