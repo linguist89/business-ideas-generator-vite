@@ -5,6 +5,7 @@ import {
   GoogleAuthProvider,
   FacebookAuthProvider,
 } from "firebase/auth";
+import { getFunctions, httpsCallable } from "firebase/functions";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_REACT_APP_apiKey,
@@ -29,3 +30,8 @@ export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 export const facebookProvider = new FacebookAuthProvider();
 export const db = getFirestore(app);
+export const functionsInstance = getFunctions(app, "europe-west3");
+export const createPortalSessionFunction = httpsCallable(
+  functionsInstance,
+  "createPortalSession"
+);

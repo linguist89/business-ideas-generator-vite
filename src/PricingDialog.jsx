@@ -16,6 +16,7 @@ import {
 import { UserContext } from "./App";
 import Spinner from "./Spinner";
 import PricingImage from "./assets/images/gold_coins_120_120.png";
+import { createPortalSessionFunction } from "./Firebase.jsx";
 
 export default function PricingDialog({
   open,
@@ -29,6 +30,19 @@ export default function PricingDialog({
   const [loading, setLoading] = React.useState(false);
   const [hasSubscription, setHasSubscription] = React.useState(false);
 
+  function callFirebaseFunction() {
+    console.log("Calling Firebase function begin");
+    createPortalSessionFunction()
+      .then((result) => {
+        const url = result.data.url;
+        window.location.assign(url);
+      })
+      .catch((error) => {
+        console.error("Error calling cloud function:", error);
+      });
+    console.log("Called Firebase function end");
+  }
+
   async function stripePayment(priceId, mode) {
     let data = {
       price: priceId,
@@ -36,7 +50,6 @@ export default function PricingDialog({
       cancel_url: window.location.origin,
       mode: mode,
     };
-
     const docRef = await addDoc(
       collection(db, "customers", user.uid, "checkout_sessions"),
       data
@@ -162,16 +175,17 @@ export default function PricingDialog({
                     </div>
                     <button
                       className="solid-card-button"
-                      disabled={
-                        hasSubscription && purchaseTypeFilter === "recurring"
-                      }
                       onClick={() => {
                         if (purchaseTypeFilter === "recurring") {
-                          setLoading(true);
-                          stripePayment(
-                            productData.prices.priceId,
-                            "subscription"
-                          );
+                          if (hasSubscription) {
+                            callFirebaseFunction();
+                          } else {
+                            setLoading(true);
+                            stripePayment(
+                              productData.prices.priceId,
+                              "subscription"
+                            );
+                          }
                         } else if (purchaseTypeFilter === "one_time") {
                           setLoading(true);
                           stripePayment(productData.prices.priceId, "payment");
@@ -184,7 +198,7 @@ export default function PricingDialog({
                     >
                       {purchaseTypeFilter === "recurring"
                         ? hasSubscription
-                          ? "Subscribed"
+                          ? "Manage Subscription"
                           : "Subscribe"
                         : "Buy Now"}
                     </button>

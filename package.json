@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@firebase/firestore": "^4.1.0",
+    "@firebase/functions": "^0.10.0",
     "@fontsource/inter": "^5.0.8",
     "@fontsource/poppins": "^5.0.5",
     "@google-cloud/secret-manager": "^5.0.0",
@@ -27,7 +28,7 @@
     "@testing-library/user-event": "^13.5.0",
     "cors": "^2.8.5",
     "env-cmd": "^10.1.0",
-    "firebase": "^9.23.0",
+    "firebase": "^10.2.0",
     "firebase-admin": "^11.10.1",
     "firebase-functions": "^4.4.1",
     "jspdf-autotable": "^3.5.31",

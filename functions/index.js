@@ -81,6 +81,38 @@ async function getProduct(productId) {
   }
 }
 
+exports.createPortalSession = functions
+    .region("europe-west3")
+    .https
+    .onCall(async (data, context) => {
+      if (!context.auth) {
+        throw new functions.https.HttpsError("unauthenticated", "User must be authenticated.");
+      }
+      const firebaseUid = context.auth.uid;
+      // Assuming you have saved the customerId in Firebase Firestore
+      // with a document named after the Firebase UID in a collection called "stripeCustomers"
+      const customerDoc = await admin.firestore().collection("customers").doc(firebaseUid).get();
+      if (!customerDoc.exists) {
+        throw new functions.https.HttpsError("not-found", "Stripe customer not found for this user.");
+      }
+      const customerId = customerDoc.data().stripeId;
+      functions.logger.log("customerId", customerId);
+      functions.logger.log("customerDocData", customerDoc.data());
+
+      try {
+        functions.logger.log("billingPortal.sessions.create started");
+        const session = await stripe.billingPortal.sessions.create({
+          customer: customerId,
+          return_url: "https://business-ideas.spsdigitaltech.com/",
+        });
+
+        return {url: session.url};
+      } catch (error) {
+        console.error("Stripe error:", error);
+        throw new functions.https.HttpsError("internal", "Failed to create Stripe portal session.");
+      }
+    });
+
 exports.onSubscriptionUpdate = functions
     .region("europe-west3")
     .https
@@ -101,8 +133,6 @@ exports.onSubscriptionUpdate = functions
           functions.logger.error("Stripe signature verification failed:", err);
           return res.status(400).send(`Webhook Error: ${err}`);
         }
-        functions.logger.log("Event", event);
-        functions.logger.log("customerStripeId", event.data.object.customer);
         const customerStripeId = event.data.object.customer;
         let productId;
         switch (event.type) {
@@ -114,7 +144,6 @@ exports.onSubscriptionUpdate = functions
             functions.logger.log("PaymentMethod was attached to a Customer!");
             break;
           case "customer.subscription.updated":
-            functions.logger.log("Subscription was updated! Product Id");
             let credits;
             functions.logger.log("event", event);
             const productId = event.data.object.plan.product;
@@ -122,8 +151,6 @@ exports.onSubscriptionUpdate = functions
               getProduct(productId)
                   .then(async (product) => {
                     credits = parseInt(product.metadata.credits);
-                    functions.logger.log("Credits type:", typeof credits);
-                    functions.logger.log("Credits for the product:", credits);
                     // update customer's credits in Firestore
                     const customersRef = admin.firestore().collection("customers");
                     // Update the customer's credits in Firestore
@@ -132,15 +159,13 @@ exports.onSubscriptionUpdate = functions
                           if (!querySnapshot.empty) {
                             querySnapshot.forEach((doc) => {
                               const customerId = doc.id;
-                              functions.logger.log("customerId", customerId);
-                              functions.logger.log("Accessing customer credit data in Firestore");
                               // Navigate to the 'credits' subcollection and then update the 'total' field
                               customersRef.doc(customerId).collection("credits").doc("total").update({
                                 amount: admin.firestore.FieldValue.increment(credits),
                               });
                             });
                           } else {
-                            functions.logger.log("No customer found with the given stripeId");
+                            functions.logger.error("No customer found with the given stripeId");
                           }
                         })
                         .catch((error) => {
@@ -191,9 +216,7 @@ exports.getStartingInfo = functions
       cors(req, res, async () => {
         const {productString} = req.body;
         let retryCount = req.body.retryCount || 0;
-        functions.logger.log("getStartingInfo called.");
         try {
-          functions.logger.log("getStartingInfo called. productString: ", productString);
           const question =
           "From the idea above, give the outline" +
           "in the following structure. The output" +
@@ -203,7 +226,6 @@ exports.getStartingInfo = functions
           "customers\": \"Quickest way to validate the market" +
           "in 3 sentences\",\n\"Selling product\": \"Easiest" +
           "way to sell the product to those customers in 3 sentences\"\n}";
-          functions.logger.log("getStartingInfo called. question: ", question);
           const content = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: [
@@ -212,10 +234,8 @@ exports.getStartingInfo = functions
             ],
             temperature: 1,
           });
-          functions.logger.log("getStartingInfo called. content: ", content);
           const dictionaryHowToRegex = /\{\s*"Creating the product":\s*".*?",\s*"Finding customers":\s*".*?",\s*"Selling product":\s*".*?"\s*\}/;
           const match = content.data.choices[0].message.content.match(dictionaryHowToRegex);
-          functions.logger.log("getStartingInfo called. match: ", match);
           if (match) {
             const parsedContent = JSON.parse(match[0]);
 
@@ -228,22 +248,22 @@ exports.getStartingInfo = functions
             ) {
               res.status(200).send(parsedContent);
             } else {
-              console.log("Parsed content: ", parsedContent);
+              functions.logger.log("Parsed content: ", parsedContent);
               throw new Error("Parsed content does not conform to the expected structure");
             }
           } else {
-            console.log("Invalid content: ", content);
+            functions.logger.log("Invalid content: ", content);
             throw new Error("Content does not conform to the expected structure");
           }
         } catch (error) {
-          console.log("Error: ", error.message);
+          functions.logger.log("Error: ", error.message);
           if (retryCount < 5) {
-            console.log("Retrying... Attempt number: ", retryCount + 1);
+            functions.logger.log("Retrying... Attempt number: ", retryCount + 1);
             retryCount++;
             req.body.retryCount = retryCount;
             exports.getStartingInfo(req, res);
           } else {
-            console.log("Maximum retry attempts exceeded.");
+            functions.logger.log("Maximum retry attempts exceeded.");
             res.status(500).send({message: error.message});
           }
         }
@@ -304,27 +324,27 @@ exports.getContextInfo = functions
             ) {
               res.status(200).send(parsedContent);
             } else {
-              console.log("Parsed content: ", parsedContent);
+              functions.logger.log("Parsed content: ", parsedContent);
               throw new Error(
                   "Parsed content does not conform to the expected structure",
               );
             }
           } else {
-            console.log("Invalid content: ", content);
+            functions.logger.log("Invalid content: ", content);
             throw new Error(
                 "Content does not conform to the expected structure",
             );
           }
         } catch (error) {
-          console.log("Error: ", error.message);
+          functions.logger.log("Error: ", error.message);
           if (retryCount < 5) {
-            console.log("Retrying... Attempt number: ", retryCount + 1);
+            functions.logger.log("Retrying... Attempt number: ", retryCount + 1);
             retryCount++;
             // Re-run the function with an increased retryCount
             req.body.retryCount = retryCount;
             exports.getContextInfo(req, res);
           } else {
-            console.log("Maximum retry attempts exceeded.");
+            functions.logger.log("Maximum retry attempts exceeded.");
             res.status(500).send({message: error.message});
           }
         }
@@ -431,7 +451,7 @@ exports.onPaymentUpdate = functions.region("europe-west3").firestore
 
         // Add purchased credits to current credits and save to Firestore
         const newTotal = currentCredits + parseInt(purchasedCredits);
-        functions.logger.log("New total credits: ", newTotal);
+        functions.logger.log("Once-off credits added of the amount: ", newTotal);
 
         await creditRef.set({amount: newTotal});
 
