@@ -29,9 +29,9 @@ export default function PricingDialog({
   const [unsubscribe, setUnsubscribe] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const [hasSubscription, setHasSubscription] = React.useState(false);
+  const [activeSubscriptionId, setActiveSubscriptionId] = React.useState(null);
 
   function callFirebaseFunction() {
-    console.log("Calling Firebase function begin");
     createPortalSessionFunction()
       .then((result) => {
         const url = result.data.url;
@@ -40,7 +40,6 @@ export default function PricingDialog({
       .catch((error) => {
         console.error("Error calling cloud function:", error);
       });
-    console.log("Called Firebase function end");
   }
 
   async function stripePayment(priceId, mode) {
@@ -80,12 +79,18 @@ export default function PricingDialog({
       const subscriptionSnapshot = await getDocs(subscriptionQuery);
       if (!subscriptionSnapshot.empty) {
         setHasSubscription(true);
+        const userSubscriptionProductId =
+          subscriptionSnapshot.docs[0].data().items[0].price.product.id;
+        console.log(userSubscriptionProductId);
+        if (userSubscriptionProductId) {
+          setActiveSubscriptionId(userSubscriptionProductId);
+        }
       }
     };
     if (user) {
       fetchSubscription();
     }
-  }, [user]);
+  }, [user, activeSubscriptionId]);
 
   React.useEffect(() => {
     if (user) {
@@ -155,55 +160,66 @@ export default function PricingDialog({
           ) : (
             <div className="PricingTable">
               {products &&
-                Object.entries(products).map(([productId, productData]) => (
-                  <div className="PricingPlan" key={Math.random()}>
-                    <div className="PlainInfoWrapper">
-                      <h2 className="PlanTitle">{productData.name}</h2>
-                      <h3 className="PlanDescription">
-                        {productData.description}
-                      </h3>
-                      <p className="PlanPrice">
-                        {purchaseTypeFilter === "recurring"
-                          ? `$${
-                              productData.prices.priceData.unit_amount / 100
-                            }/mo.`
-                          : `$${
-                              productData.prices.priceData.unit_amount / 100
-                            }`}
-                      </p>
-                      <img src={PricingImage} alt="Pricing Image"></img>
-                    </div>
-                    <button
-                      className="solid-card-button"
-                      onClick={() => {
-                        if (purchaseTypeFilter === "recurring") {
-                          if (hasSubscription) {
-                            callFirebaseFunction();
-                          } else {
-                            setLoading(true);
-                            stripePayment(
-                              productData.prices.priceId,
-                              "subscription"
-                            );
-                          }
-                        } else if (purchaseTypeFilter === "one_time") {
-                          setLoading(true);
-                          stripePayment(productData.prices.priceId, "payment");
-                        } else {
-                          console.log(
-                            "There has been an error with the purchase code"
-                          );
-                        }
-                      }}
-                    >
-                      {purchaseTypeFilter === "recurring"
-                        ? hasSubscription
-                          ? "Manage Subscription"
-                          : "Subscribe"
-                        : "Buy Now"}
-                    </button>
-                  </div>
-                ))}
+                Object.entries(products).map(([productId, productData]) => {
+                  // Check if the user does not have a subscription or if they have this specific subscription
+                  console.log(productId, activeSubscriptionId);
+                  if (!hasSubscription || productId === activeSubscriptionId) {
+                    return (
+                      <div className="PricingPlan" key={Math.random()}>
+                        {" "}
+                        <div className="PlainInfoWrapper">
+                          <h2 className="PlanTitle">{productData.name}</h2>
+                          <h3 className="PlanDescription">
+                            {productData.description}
+                          </h3>
+                          <p className="PlanPrice">
+                            {purchaseTypeFilter === "recurring"
+                              ? `$${
+                                  productData.prices.priceData.unit_amount / 100
+                                }/mo.`
+                              : `$${
+                                  productData.prices.priceData.unit_amount / 100
+                                }`}
+                          </p>
+                          <img src={PricingImage} alt="Pricing Image"></img>
+                        </div>
+                        <button
+                          className="solid-card-button"
+                          onClick={() => {
+                            if (purchaseTypeFilter === "recurring") {
+                              if (hasSubscription) {
+                                callFirebaseFunction();
+                              } else {
+                                setLoading(true);
+                                stripePayment(
+                                  productData.prices.priceId,
+                                  "subscription"
+                                );
+                              }
+                            } else if (purchaseTypeFilter === "one_time") {
+                              setLoading(true);
+                              stripePayment(
+                                productData.prices.priceId,
+                                "payment"
+                              );
+                            } else {
+                              console.log(
+                                "There has been an error with the purchase code"
+                              );
+                            }
+                          }}
+                        >
+                          {purchaseTypeFilter === "recurring"
+                            ? hasSubscription
+                              ? "Manage Subscription"
+                              : "Subscribe"
+                            : "Buy Now"}
+                        </button>
+                      </div>
+                    );
+                  }
+                  return null; // If user has an active subscription and this is not the one, don't render it.
+                })}
             </div>
           )}
           <div
