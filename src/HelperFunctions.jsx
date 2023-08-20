@@ -19,8 +19,6 @@ export async function updateFirebaseWithTokens(
   setCredits,
   user
 ) {
-  console.log(completion);
-  console.log("TODO: Update Firebase with tokens used");
   const completion_data = {
     model: completion.model,
     usage: completion.usage,

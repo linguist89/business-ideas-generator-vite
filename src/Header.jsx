@@ -7,7 +7,8 @@ import PricingDialog from "./PricingDialog";
 import ProfileDialog from "./ProfileDialog";
 import useUserSubscription from "./useUserSubscription";
 import "./MobileDialog.css";
-import MobileDialog from "./MobileDialog";
+import { FiMenu } from "react-icons/fi";
+import { Cross2Icon } from "@radix-ui/react-icons";
 
 function Header() {
   const { user, setUser } = React.useContext(UserContext);
@@ -19,6 +20,13 @@ function Header() {
     setUser,
     setCredits
   );
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const headerClass = `header-wrapper ${
+    isMenuOpen ? "header-expanded-wrapper" : ""
+  }`;
+  const headerClassLoggedIn = `header-wrapper-logged-in ${
+    isMenuOpen ? "header-expanded-wrapper" : ""
+  }`;
 
   const Buttons = () => (
     <>
@@ -40,8 +48,8 @@ function Header() {
   );
 
   return (
-    <header className="header">
-      <div className="header-wrapper">
+    <header className={`header ${isMenuOpen ? "header-expanded" : ""}`}>
+      <div className={user ? headerClassLoggedIn : headerClass}>
         <div className="logo">
           <img src={HeaderImage} alt="Business Ideas logo" />
         </div>
@@ -61,13 +69,29 @@ function Header() {
             }
           </div>
         )}
+        <div className={user ? "menu-mobile-logged-in" : "menu-mobile"}>
+          {isMenuOpen ? (
+            <Cross2Icon
+              className="HamburgerIcon"
+              onClick={() => {
+                setIsMenuOpen(false);
+                document.body.style.overflow = "";
+              }}
+            />
+          ) : (
+            <FiMenu
+              className="HamburgerIcon mobile-trigger"
+              onClick={() => {
+                setIsMenuOpen(true);
+                document.body.style.overflow = "hidden";
+              }}
+            />
+          )}
+        </div>
         <div className="HeaderButtonsWrapper">
           {user ? (
-            <div>
-              <div className="menu-desktop">
-                <Buttons />
-              </div>
-              <MobileDialog></MobileDialog>
+            <div className={isMenuOpen ? "mobile-menu" : "menu-desktop"}>
+              <Buttons />
             </div>
           ) : (
             <button
@@ -77,7 +101,6 @@ function Header() {
               Login
             </button>
           )}
-
           <LoginDialog
             open={showLoginDialog}
             onClose={() => setShowLoginDialog(false)}

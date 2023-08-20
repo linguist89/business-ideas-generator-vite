@@ -95,6 +95,9 @@ function BodyComponent() {
         querySnapshot.forEach((doc) => {
           allIdeas.push({ id: doc.id, data: doc.data() });
         });
+        allIdeas.sort((a, b) => {
+          return b.data.timestamp - a.data.timestamp;
+        });
         setPreviousIdeas(allIdeas);
       };
       fetchIdeas();
@@ -124,10 +127,7 @@ function BodyComponent() {
   };
 
   const scrollToBottom = () => {
-    window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: "smooth",
-    });
+    console.log("TODO: scroll to bottom");
   };
 
   async function logErrorToFirestore(errorMsg) {
@@ -147,7 +147,10 @@ function BodyComponent() {
     try {
       const userIdeasRef = collection(db, "customers", user.uid, "ideas");
       const newIdeaDoc = doc(userIdeasRef);
-      await setDoc(newIdeaDoc, searchData);
+      await setDoc(newIdeaDoc, {
+        ...searchData,
+        timestamp: new Date(),
+      });
       return newIdeaDoc.id;
     } catch (error) {
       console.log("Something went wrong when writing documents: ", searchData);
@@ -177,6 +180,7 @@ function BodyComponent() {
       );
 
       if (!response.ok) {
+        setIdeasLoading(false);
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
@@ -188,7 +192,6 @@ function BodyComponent() {
   }
 
   async function businessIdeasClick() {
-    let startTime = performance.now();
     if (!user) {
       setShowLoginDialog(true);
     } else {
@@ -200,9 +203,11 @@ function BodyComponent() {
       if (!checkCreditAmount()) {
         return;
       }
+
+      scrollToBottom();
       setIdeasLoading(true);
       setIdeaResults([]);
-      scrollToBottom();
+
       let checkedFocus = focus ? focus : "Random product or service";
       let checkedTrends = trends ? trends : "Any customer";
       let checkedCv = cv ? cv : "Various skills";
@@ -232,8 +237,6 @@ function BodyComponent() {
             "Selling product": "",
           };
         });
-
-        console.log("parsedResponse: ", parsedResponse);
       } catch (error) {
         console.log(
           "Error in callNetlifyFunction or getContextInfoOpenAITest or getStartingInfoOpenAITest: ",
@@ -263,10 +266,6 @@ function BodyComponent() {
         ...prevIdeas,
       ]);
     }
-    let endTime = performance.now();
-    console.log(
-      `Call to generate business ideas took ${endTime - startTime} milliseconds`
-    );
   }
 
   return (

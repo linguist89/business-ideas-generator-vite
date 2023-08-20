@@ -81,7 +81,6 @@ export default function PricingDialog({
         setHasSubscription(true);
         const userSubscriptionProductId =
           subscriptionSnapshot.docs[0].data().items[0].price.product.id;
-        console.log(userSubscriptionProductId);
         if (userSubscriptionProductId) {
           setActiveSubscriptionId(userSubscriptionProductId);
         }
@@ -162,8 +161,11 @@ export default function PricingDialog({
               {products &&
                 Object.entries(products).map(([productId, productData]) => {
                   // Check if the user does not have a subscription or if they have this specific subscription
-                  console.log(productId, activeSubscriptionId);
-                  if (!hasSubscription || productId === activeSubscriptionId) {
+                  if (
+                    purchaseTypeFilter === "one_time" ||
+                    !hasSubscription ||
+                    productId === activeSubscriptionId
+                  ) {
                     return (
                       <div className="PricingPlan" key={Math.random()}>
                         {" "}
