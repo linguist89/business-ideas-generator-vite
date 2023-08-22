@@ -32,6 +32,7 @@ export default function PricingDialog({
   const [activeSubscriptionId, setActiveSubscriptionId] = React.useState(null);
 
   function callFirebaseFunction() {
+    setLoading(true); // Show spinner
     createPortalSessionFunction()
       .then((result) => {
         const url = result.data.url;
@@ -39,6 +40,9 @@ export default function PricingDialog({
       })
       .catch((error) => {
         console.error("Error calling cloud function:", error);
+      })
+      .finally(() => {
+        setLoading(false); // Hide spinner
       });
   }
 
@@ -164,7 +168,7 @@ export default function PricingDialog({
                   if (
                     purchaseTypeFilter === "one_time" ||
                     !hasSubscription ||
-                    productId === activeSubscriptionId
+                    productId
                   ) {
                     return (
                       <div className="PricingPlan" key={Math.random()}>
@@ -213,7 +217,9 @@ export default function PricingDialog({
                         >
                           {purchaseTypeFilter === "recurring"
                             ? hasSubscription
-                              ? "Manage Subscription"
+                              ? productId === activeSubscriptionId
+                                ? "Manage Current Subscription"
+                                : `Switch to ${productData.name}`
                               : "Subscribe"
                             : "Buy Now"}
                         </button>

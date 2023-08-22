@@ -15,7 +15,7 @@
   }
   
   .transparent-button:hover {
-    background-color: #153c49;
+    background-color: var(--primary-color-dark);
     border-color: #ffffff;
     color: #ffffff;
   }
@@ -26,7 +26,7 @@
   }
   
   .transparent-button:active {
-    background-color: #153c49;
+    background-color: var(--primary-color-dark);
   }
   
   .transparent-button:disabled {
@@ -66,7 +66,7 @@
   }
   
   .solid-button:active {
-    background-color: #153c49;
+    background-color: var(--primary-color-dark);
     color: #ffffff;
   }
   
@@ -90,13 +90,13 @@
     white-space: nowrap;
     vertical-align: middle;
     cursor: pointer;
-    background-color: #0e7490;
+    background-color: var(--primary-color);
     color: #ffffff;
   }
   
   .solid-card-button:hover {
-    background-color: #153c49;
-    border-color: #153c49;
+    background-color: var(--primary-color-dark);
+    border-color: var(--primary-color-dark);
     color: #ffffff;
   }
   
@@ -106,7 +106,7 @@
   }
   
   .solid-card-button:active {
-    background-color: #153c49;
+    background-color: var(--primary-color-dark);
   }
   
   .solid-card-button:disabled {

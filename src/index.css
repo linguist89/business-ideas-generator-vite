@@ -10,6 +10,11 @@
   }
 }
 
+:root {
+  --primary-color: #0E7490;
+  --primary-color-dark: #153c49;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   margin: 0;

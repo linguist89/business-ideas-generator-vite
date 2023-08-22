@@ -42,7 +42,23 @@ function BodyComponent() {
   const [ideasLoading, setIdeasLoading] = React.useState(false);
   const [previousIdeas, setPreviousIdeas] = React.useState([]);
   const [selectedIdea, setSelectedIdea] = React.useState(null);
+  const [selectedIdeaIndex, setSelectedIdeaIndex] = React.useState(0);
   const auth = getAuth();
+
+  React.useEffect(() => {
+    if (!user) {
+      console.log("TODO - fix example ideas");
+      const exampleIdea = exampleIdeas[0];
+      loadIdea({ data: exampleIdea, id: 0 });
+    }
+  }, [user]);
+
+  React.useEffect(() => {
+    if (user && previousIdeas.length > 0) {
+      const latestIdea = previousIdeas[0];
+      loadIdea(latestIdea);
+    }
+  }, [user, previousIdeas]);
 
   React.useEffect(() => {
     const performSignIn = async () => {
@@ -70,13 +86,6 @@ function BodyComponent() {
     };
     performSignIn();
   }, [auth, setUser]);
-
-  React.useEffect(() => {
-    if (user && previousIdeas.length > 0) {
-      const latestIdea = previousIdeas[0];
-      loadIdea(latestIdea);
-    }
-  }, [user, previousIdeas]);
 
   React.useEffect(() => {
     if (!user) {
@@ -199,7 +208,6 @@ function BodyComponent() {
         alert("Please verify your email");
         return;
       }
-      // Validate that the user has more than 0 credits.
       if (!checkCreditAmount()) {
         return;
       }
@@ -327,8 +335,13 @@ function BodyComponent() {
                 {exampleIdeas.map((exampleIdea, index) => (
                   <li key={index}>
                     <button
-                      className="button-link"
-                      onClick={() => loadIdea({ data: exampleIdea })}
+                      className={`button-link ${
+                        selectedIdeaIndex === index ? "selected-idea" : ""
+                      }`}
+                      onClick={() => {
+                        setSelectedIdeaIndex(index);
+                        loadIdea({ data: exampleIdea });
+                      }}
                     >
                       {exampleIdea.focus}
                     </button>
@@ -341,19 +354,19 @@ function BodyComponent() {
             <h1 className="previous-items-title">Generate new ideas</h1>
             <div className="TextareaWrapper">
               <CustomTextarea
-                instructions="What do you want to do?"
+                instructions="What do you want to do? (Leave blank for random ideas)"
                 placeholder="What do you want to do? (Leave blank for random ideas)"
                 infoSetter={setFocus}
                 value={focus ? focus : ""}
               ></CustomTextarea>
               <CustomTextarea
-                instructions="What type of people are you hoping to sell to?"
+                instructions="What type of people are you hoping to sell to? (Leave blank for random ideas)"
                 placeholder="What type of people are you hoping to sell to? (Leave blank for random ideas)"
                 infoSetter={setTrends}
                 value={trends ? trends : ""}
               ></CustomTextarea>
               <CustomTextarea
-                instructions="What are the 3 or 4 skills you want to focus on?"
+                instructions="What are the 3 or 4 skills you want to focus on? (Leave blank for random ideas)"
                 placeholder="What are the 3 or 4 skills you want to focus on? (Leave blank for random ideas)"
                 infoSetter={setCv}
                 value={cv ? cv : ""}

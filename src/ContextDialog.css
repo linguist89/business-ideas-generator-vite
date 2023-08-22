@@ -95,18 +95,18 @@
 }
 
 .ContextTabsTrigger:hover {
-  color: #0E7490;
+  color: var(--primary-color);
 }
 
 .ContextTabsTrigger[data-state='active'] {
   color: #ffffff;
-  background-color: #0E7490;
+  background-color: var(--primary-color);
 }
 
 .ContextTabsTrigger:focus {
   position: relative;
   color: #ffffff;
-  background-color: #0E7490;
+  background-color: var(--primary-color);
 }
 
 .ContextTabsContent {
@@ -141,7 +141,7 @@
   font-size: 13px;
   line-height: 1;
   margin-bottom: 10px;
-  color: #0E7490;
+  color: var(--primary-color);
   display: block;
 }
 
@@ -151,13 +151,13 @@
   padding: 0 10px;
   font-size: 15px;
   line-height: 1;
-  color: #0E7490;
+  color: var(--primary-color);
   box-shadow: 0 0 0 1px #094C5F;
   height: 35px;
 }
 
 .Input:focus {
-  box-shadow: 0 0 0 2px #0E7490;
+  box-shadow: 0 0 0 2px var(--primary-color);
 }
 
 

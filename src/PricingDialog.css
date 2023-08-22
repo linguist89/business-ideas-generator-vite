@@ -55,14 +55,14 @@
 }
 
 .PlanTitle {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 1rem;
 }
 
 .PlanPrice {
   font-size: 2rem;
-  color: #0E7490;
+  color: var(--primary-color);
   margin-bottom: 2rem;
 }
 
@@ -165,3 +165,4 @@
 .IconButton:focus {
   box-shadow: none;
 }
+

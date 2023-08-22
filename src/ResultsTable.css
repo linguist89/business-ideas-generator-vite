@@ -47,7 +47,7 @@
 }
 
 .ResultsTable th {
-    background-color: #0e7490; 
+    background-color: var(--primary-color); 
     color: white;
 }
 

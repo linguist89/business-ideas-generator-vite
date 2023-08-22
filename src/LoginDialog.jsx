@@ -25,8 +25,13 @@ function LoginDialog({ open, onClose }) {
     if (resetEmail) {
       sendPasswordResetEmail(auth, resetEmail)
         .then(() => {
-          // Step 2: Update the function to set the state
           setIsResetEmailSent(true);
+          // sleep for 10 seconds and then close the dialog
+          setTimeout(() => {
+            onClose(false);
+            setIsResetEmailSent(false);
+            setShowForgotPassword(false);
+          }, 10000);
         })
         .catch((error) => {
           alert("Error sending password reset email: " + error.message);

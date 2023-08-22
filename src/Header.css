@@ -78,6 +78,21 @@
     align-content: center;
   }
 
+  .header-wrapper-logged-in .HeaderButtonsWrapper {
+    grid-column: span 2;
+    justify-content: center;
+  }
+
+  .header-wrapper-logged-in .HeaderButtonsWrapper button {
+    width: 100%;
+  }
+
+  .header-wrapper-logged-in .mobile-menu {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+  }
+
   .menu-desktop {
     display: none;
   }

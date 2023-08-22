@@ -110,7 +110,7 @@ li{
 .body-component {
   display: flex;
   justify-content: space-evenly;
-  background-color: #0E7490;
+  background-color: var(--primary-color);
   color: #fff;
   height: 100%;
   align-items: center;

@@ -78,7 +78,7 @@
 
 .Label {
   font-size: 15px;
-  color: #0E7490;
+  color: var(--primary-color);
   text-align: right;
 }
 
@@ -91,7 +91,7 @@
   padding: 0.6rem;
   font-size: 0.8rem;
   line-height: 1;
-  color: #0E7490;
+  color: var(--primary-color);
   box-shadow: 0 0 0 1px #094C5F;
   border-radius: 0.4rem;
 }
@@ -135,7 +135,7 @@
   background: none;
   border: none;
   padding: 0;
-  color: #0E7490;
+  color: var(--primary-color);
   cursor: pointer;
   font-family: inherit;
   font-size: inherit;
