@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./ResultsTable.css";
 import ContextDialog from "./ContextDialog";
 import HowToDialog from "./HowToDialog";
-import logo from "./assets/images/site_logo.png";
+import logo from "./assets/images/leaf_logo_v2_black.png";
 import { SelectedIdeaContext } from "./BodyComponent";
 import { UserContext } from "./App";
 import { doc, updateDoc } from "firebase/firestore";
@@ -215,13 +215,13 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
 
       // Add the logo to the PDF
       if (logoBase64) {
-        doc.addImage(logoBase64, "PNG", 10, currentY, 40, 30);
+        doc.addImage(logoBase64, "PNG", 10, currentY, 40, 15);
         currentY += 35; // adjust this to increase the space between the logo and the title
       }
 
       doc.setFontSize(16);
       doc.text(product.product, 10, currentY);
-      currentY += 20; // adjust this to increase the space between the title and table
+      currentY += 10; // adjust this to increase the space between the title and table
 
       const headers = ["Heading", "Details"];
 
@@ -279,7 +279,7 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
 
       // Add the logo to the PDF
       if (logoBase64) {
-        doc.addImage(logoBase64, "PNG", 10, currentY, 40, 30);
+        doc.addImage(logoBase64, "PNG", 10, currentY, 40, 15);
         currentY += 35; // adjust this to increase the space between the logo and the title
       }
 
@@ -289,7 +289,7 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
 
       const lineHeight = 7; // Roughly the height for font size 22. Adjust if needed.
       const titleHeight = lines.length * lineHeight;
-      currentY += titleHeight + 10; // Adding 10 as a gap between the title and table
+      currentY += titleHeight; // Adding 10 as a gap between the title and table
 
       doc.setFontSize(16);
 

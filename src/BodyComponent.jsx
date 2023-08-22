@@ -126,13 +126,8 @@ function BodyComponent() {
     await deleteDoc(ideaRef);
   }
 
-  const scrollToIdeasGenerator = () => {
-    const element = document.getElementById("ideas-generator");
-    const rect = element.getBoundingClientRect();
-    window.scrollTo({
-      top: rect.top - 120,
-      behavior: "smooth",
-    });
+  const getHowToGuide = () => {
+    alert("TODO: getHowToGuide");
   };
 
   const scrollToBottom = () => {
@@ -289,8 +284,8 @@ function BodyComponent() {
             Generating the ideas, so you can build them without wasting time
           </h2>
           <div className="button-group">
-            <button className="solid-button" onClick={scrollToIdeasGenerator}>
-              Let's get ideas
+            <button className="solid-button" onClick={getHowToGuide}>
+              How to use the site
             </button>
           </div>
         </div>

@@ -43,5 +43,9 @@
       align-items: center;
       gap: 0.5rem;
     }
+
+    .footer-wrapper {
+      height: 15vh;
+    }
   }
   

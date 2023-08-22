@@ -104,7 +104,7 @@ function LoginDialog({ open, onClose }) {
                       className="link-button"
                       onClick={() => setShowSignup(true)}
                     >
-                      Signup here
+                      Sign up
                     </button>
                   </p>
                 )}
@@ -119,16 +119,16 @@ function LoginDialog({ open, onClose }) {
                     </button>
                   </p>
                 )}
+                <p>
+                  Have an account, but{" "}
+                  <button
+                    className="link-button"
+                    onClick={() => setShowForgotPassword(true)}
+                  >
+                    forgot password?
+                  </button>
+                </p>
               </div>
-              <p>
-                Have an account, but{" "}
-                <button
-                  className="link-button"
-                  onClick={() => setShowForgotPassword(true)}
-                >
-                  forgot password?
-                </button>
-              </p>
             </>
           )}
           <Dialog.Close asChild>

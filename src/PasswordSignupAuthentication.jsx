@@ -51,7 +51,7 @@ function PasswordSignupAuthentication() {
         placeholder="Password"
       />
       <button className="solid-card-button" onClick={handleSignup}>
-        Signup
+        Sign up
       </button>
       {error && <p>{error}</p>}
     </div>
