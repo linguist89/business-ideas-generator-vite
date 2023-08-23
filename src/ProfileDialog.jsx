@@ -35,10 +35,22 @@ function ProfileDialog({ open, onClose }) {
               <div>
                 {user.emailVerified ? (
                   <>
-                    <p>{`${
-                      user.displayName ? user.displayName : user.email
-                    } (${credits} credits remaining)`}</p>
-                    <p>{`${userPlan} renewal date: ${renewalDate}`}</p>
+                    <p>
+                      <b>User: </b>
+                      {user.displayName ? user.displayName : user.email}
+                      <p>
+                        <b>Credits Remaining: </b>
+                        {credits}
+                      </p>
+                    </p>
+                    <p>
+                      <b>Current Plan: </b>
+                      {userPlan}
+                    </p>
+                    <p>
+                      <b>Renewal Date: </b>
+                      {renewalDate}
+                    </p>
                   </>
                 ) : (
                   <>

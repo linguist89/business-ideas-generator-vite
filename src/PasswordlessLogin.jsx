@@ -5,7 +5,8 @@ import EmailIcon from "./assets/images/EmailIcon.svg?component";
 import "./PasswordlessLogin.css";
 
 const actionCodeSettings = {
-  url: "https://business-ideas.spsdigitaltech.com/",
+  //url: "https://business-ideas.spsdigitaltech.com/",
+  url: "http://localhost:5173/",
   handleCodeInApp: true,
 };
 
@@ -20,6 +21,7 @@ function LoginWithEmailLink() {
     sendSignInLinkToEmail(auth, email, actionCodeSettings)
       .then(() => {
         window.localStorage.setItem("emailForSignIn", email);
+        console.log(email);
         setShowInput(false);
         setEmail("");
         setLinkSent(true); // Set the linkSent to true

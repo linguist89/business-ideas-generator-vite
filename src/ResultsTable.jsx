@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./ResultsTable.css";
 import ContextDialog from "./ContextDialog";
 import HowToDialog from "./HowToDialog";
-import logo from "./assets/images/leaf_logo_v2_black.png";
+import logo from "./assets/images/leaf_logo_black.png";
 import { SelectedIdeaContext } from "./BodyComponent";
 import { UserContext } from "./App";
 import { doc, updateDoc } from "firebase/firestore";
@@ -215,12 +215,16 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
 
       // Add the logo to the PDF
       if (logoBase64) {
-        doc.addImage(logoBase64, "PNG", 10, currentY, 40, 15);
+        doc.addImage(logoBase64, "PNG", 10, currentY, 30, 15);
         currentY += 35; // adjust this to increase the space between the logo and the title
       }
 
       doc.setFontSize(16);
-      doc.text(product.product, 10, currentY);
+      let titleWidth =
+        (doc.getStringUnitWidth(product.product) * doc.internal.getFontSize()) /
+        doc.internal.scaleFactor;
+      let titleX = (doc.internal.pageSize.width - titleWidth) / 2;
+      doc.text(product.product, titleX, currentY);
       currentY += 10; // adjust this to increase the space between the title and table
 
       const headers = ["Heading", "Details"];
@@ -279,13 +283,17 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
 
       // Add the logo to the PDF
       if (logoBase64) {
-        doc.addImage(logoBase64, "PNG", 10, currentY, 40, 15);
+        doc.addImage(logoBase64, "PNG", 10, currentY, 30, 15);
         currentY += 35; // adjust this to increase the space between the logo and the title
       }
 
       doc.setFontSize(16);
-      const lines = doc.splitTextToSize(title, 180);
-      doc.text(lines, 10, currentY);
+      const lines = doc.splitTextToSize(title, 180); // assuming this was already working correctly for you
+      let titleWidth =
+        (doc.getStringUnitWidth(lines[0]) * doc.internal.getFontSize()) /
+        doc.internal.scaleFactor;
+      let titleX = (doc.internal.pageSize.width - titleWidth) / 2;
+      doc.text(lines, titleX, currentY);
 
       const lineHeight = 7; // Roughly the height for font size 22. Adjust if needed.
       const titleHeight = lines.length * lineHeight;

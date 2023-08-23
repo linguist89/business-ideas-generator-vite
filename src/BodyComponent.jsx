@@ -26,6 +26,8 @@ import {
   signInWithEmailLink,
 } from "firebase/auth";
 import ConfirmationDelete from "./ConfirmationDelete";
+import InfoDialog from "./InfoDialog";
+import howToGuide from "./howToGuide.json";
 
 export const SelectedIdeaContext = React.createContext();
 
@@ -284,9 +286,11 @@ function BodyComponent() {
             Generating the ideas, so you can build them without wasting time
           </h2>
           <div className="button-group">
-            <button className="solid-button" onClick={getHowToGuide}>
-              How to use the site
-            </button>
+            <InfoDialog
+              title="How to use this site"
+              content={howToGuide.HowToGuide}
+              buttonType="solid-button"
+            ></InfoDialog>
           </div>
         </div>
         <div className="right-section">

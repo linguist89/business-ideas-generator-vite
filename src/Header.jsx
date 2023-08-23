@@ -22,10 +22,10 @@ function Header() {
   );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const headerClass = `header-wrapper ${
-    isMenuOpen ? "header-expanded-wrapper" : ""
+    isMenuOpen && user ? "header-expanded-wrapper" : ""
   }`;
   const headerClassLoggedIn = `header-wrapper-logged-in ${
-    isMenuOpen ? "header-expanded-wrapper" : ""
+    isMenuOpen && user ? "header-expanded-wrapper" : ""
   }`;
 
   const Buttons = () => (
@@ -48,7 +48,7 @@ function Header() {
   );
 
   return (
-    <header className={`header ${isMenuOpen ? "header-expanded" : ""}`}>
+    <header className={`header ${isMenuOpen && user ? "header-expanded" : ""}`}>
       <div className={user ? headerClassLoggedIn : headerClass}>
         <div className="logo">
           <img src={HeaderImage} alt="Business Ideas logo" />

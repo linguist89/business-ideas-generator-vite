@@ -72,6 +72,10 @@
 }
 
 @media (max-width: 768px) {
+  .logo img {
+    height: 2rem;
+  }
+
   .header-wrapper, .header-wrapper-logged-in {
     display: grid;
     grid-template-columns: repeat(2, auto);

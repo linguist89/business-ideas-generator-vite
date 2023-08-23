@@ -1,22 +1,18 @@
 /* reset */
-.PricingDialog button,
-.PricingDialog fieldset,
-.PricingDialog input {
+.InfoDialog button,
+.InfoDialog fieldset,
+.InfoDialog input {
   all: unset;
 }
 
-.PlanDescription{
-  font-weight: lighter;
-}
-
-.PricingDialogOverlay {
+.InfoDialogOverlay {
   background-color: #00000099;
   position: fixed;
   inset: 0;
   animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.PricingDialogContent {
+.InfoDialogContent {
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
@@ -34,50 +30,7 @@
   z-index: 2;
 }
 
-.PricingTable {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 2rem;
-  height: 30em;
-}
-
-.PricingPlan {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex: 1;
-  width: 100%;
-  padding: 2rem;
-  border-radius: 0.4rem;
-  border: 1px solid #000000;
-  text-align: center;
-}
-
-.PlanTitle {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-.PlanPrice {
-  font-size: 2rem;
-  color: var(--primary-color);
-  margin-bottom: 2rem;
-}
-
-.PlanFeatures {
-  list-style-type: none;
-  padding: 0;
-}
-
-.FeatureItem {
-  font-size: 1.2rem;
-  padding: 1rem 0;
-  border-top: 1px solid #eeeeee;
-}
-
-.PricingDialogTitle{
+.InfoDialogTitle{
   margin: 0;
   font-size: 2rem;
   font-weight: bold;
@@ -105,36 +58,13 @@
 
 @media (max-width: 768px) {
 
-  .PricingDialogContent {
+  .InfoDialogContent {
     max-width: 85%;
-    padding: 1rem;
+    padding: 2rem;
+    overflow: scroll;
   }
 
-  .PricingTable {
-    flex-direction: column;
-    overflow-y: scroll;
-  }
-
-  .PricingPlan {
-    width: auto;
-
-  }
-
-  .PlanTitle {
-    font-size: 1.2rem;
-  }
-
-  .PlanPrice {
-    font-size: 1.6rem;
-  }
-
-  .FeatureItem {
-    font-size: 1em;
-    padding: 7px;
-    margin-bottom: 7px;
-  }
-
-  .PricingDialogTitle {
+  .InfoDialogTitle {
     font-size: 1.5rem;
     padding-bottom: 1rem;
   }
