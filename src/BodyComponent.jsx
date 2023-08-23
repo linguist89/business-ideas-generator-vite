@@ -27,7 +27,7 @@ import {
 } from "firebase/auth";
 import ConfirmationDelete from "./ConfirmationDelete";
 import InfoDialog from "./InfoDialog";
-import howToGuide from "./howToGuide.json";
+import howToGuide from "./HowToGuide.json";
 
 export const SelectedIdeaContext = React.createContext();
 
