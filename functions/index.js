@@ -215,22 +215,14 @@ exports.getStartingInfo = functions
         let retryCount = req.body.retryCount || 0;
         try {
           const question =
-          "Based on the product idea provided, can you furnish a detailed outline" +
-          "in the structure delineated below? While elaborating, ensure your answers are" +
-          "both insightful and concise. The output should conform to the described dictionary format:" +
-          "\n{\n" +
-          "\"Product Creation Objective\": \"Define the primary goal during the product development phase.\"," +
-          "\"Key Steps for Product Creation\": \"Detail the 3 most crucial steps for rapid product development.\"," +
-          "\"Challenges in Product Creation\": \"Identify the major challenges anticipated during product creation.\"," +
-
-          "\"Market Validation Objective\": \"What's the main goal when seeking to validate the market?\", " +
-          "\"Key Steps for Market Validation\": \"Describe the 3 top strategies to swiftly pinpoint the target market.\", " +
-          "\"Challenges in Market Validation\": \"Highlight potential obstacles in market validation.\"," +
-
-          "\"Selling Process Objective\": \"State the core aim of your selling strategy.\"," +
-          "\"Key Steps for Selling\": \"List the 3 most effective methods to engage and sell to the identified audience.\", " +
-          "\"Challenges in Selling\": \"Pinpoint probable difficulties you might encounter while selling the product.\"" +
-          "\n}";
+          "From the idea above, give the outline" +
+          "in the following structure. The output" +
+          "should be a dictionary as is described" +
+          "below:\n{\n\"Creating the product\": \"Quickest" +
+          "way to create it in 6 sentences\",\n\"Finding" +
+          "customers\": \"Quickest way to validate the market" +
+          "in 6 sentences\",\n\"Selling product\": \"Easiest" +
+          "way to sell the product to those customers in 6 sentences\"\n}";
           const content = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: [
@@ -289,11 +281,11 @@ exports.getContextInfo = functions
           "in the following structure. The output" +
           "should be a dictionary as is described" +
           "below:\n{\n\"Consumer Pain Point\": \"Biggest" +
-          "consumer pain points in about 3 sentences\",\n" +
+          "consumer pain points in about 6 sentences\",\n" +
           "\"Effort\": \"Biggest ways to minimize the" +
-          "consumer's effort in about 3 sentences\",\n\"Time\":" +
+          "consumer's effort in about 6 sentences\",\n\"Time\":" +
           "\"Biggest ways to minimize the time the consumer has" +
-          "to spend to get the product in about 3 sentences\"\n}";
+          "to spend to get the product in about 6 sentences\"\n}";
           const content = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: [

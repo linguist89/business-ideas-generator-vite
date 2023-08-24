@@ -5,8 +5,8 @@ import EmailIcon from "./assets/images/EmailIcon.svg?component";
 import "./PasswordlessLogin.css";
 
 const actionCodeSettings = {
-  //url: "https://business-ideas.spsdigitaltech.com/",
-  url: "http://localhost:5173/",
+  url: "https://business-ideas.spsdigitaltech.com/",
+  //url: "http://localhost:5173/",
   handleCodeInApp: true,
 };
 
