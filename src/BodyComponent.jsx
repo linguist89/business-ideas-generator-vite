@@ -27,6 +27,7 @@ import {
 } from "firebase/auth";
 import ConfirmationDelete from "./ConfirmationDelete";
 import InfoDialog from "./InfoDialog";
+import NewsletterDialog from "./NewsletterDialog";
 import howToGuide from "./HowToGuide.json";
 
 export const SelectedIdeaContext = React.createContext();
@@ -127,11 +128,6 @@ function BodyComponent() {
     const ideaRef = doc(db, "customers", user.uid, "ideas", ideaId);
     await deleteDoc(ideaRef);
   }
-
-  const getHowToGuide = () => {
-    alert("TODO: getHowToGuide");
-  };
-
   const scrollToBottom = () => {
     console.log("TODO: scroll to bottom");
   };
@@ -193,7 +189,6 @@ function BodyComponent() {
       return await response.json();
     } catch (error) {
       await logErrorToFirestore(`Fetch error: ${error}`);
-      throw error;
     }
   }
 
@@ -234,9 +229,6 @@ function BodyComponent() {
         parsedResponse = parsedResponse.map((idea) => {
           return {
             ...idea,
-            "Consumer Pain Point": "",
-            Effort: "",
-            Time: "",
             "Creating the product": "",
             "Finding customers": "",
             "Selling product": "",
@@ -288,9 +280,10 @@ function BodyComponent() {
           <div className="button-group">
             <InfoDialog
               title="How to use this site"
-              content={howToGuide.HowToGuide}
+              data={howToGuide}
               buttonType="solid-button"
             ></InfoDialog>
+            <NewsletterDialog></NewsletterDialog>
           </div>
         </div>
         <div className="right-section">
@@ -353,19 +346,19 @@ function BodyComponent() {
             <h1 className="previous-items-title">Generate new ideas</h1>
             <div className="TextareaWrapper">
               <CustomTextarea
-                instructions="What do you want to do? (Leave blank for random ideas)"
+                instructions="What do you want to do?"
                 placeholder="What do you want to do? (Leave blank for random ideas)"
                 infoSetter={setFocus}
                 value={focus ? focus : ""}
               ></CustomTextarea>
               <CustomTextarea
-                instructions="What type of people are you hoping to sell to? (Leave blank for random ideas)"
+                instructions="What type of people are you hoping to sell to?"
                 placeholder="What type of people are you hoping to sell to? (Leave blank for random ideas)"
                 infoSetter={setTrends}
                 value={trends ? trends : ""}
               ></CustomTextarea>
               <CustomTextarea
-                instructions="What are the 3 or 4 skills you want to focus on? (Leave blank for random ideas)"
+                instructions="What are the 3 or 4 skills you want to focus on?"
                 placeholder="What are the 3 or 4 skills you want to focus on? (Leave blank for random ideas)"
                 infoSetter={setCv}
                 value={cv ? cv : ""}

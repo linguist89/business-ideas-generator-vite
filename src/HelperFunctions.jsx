@@ -6,7 +6,6 @@ async function saveTokensToFirebase(tokens) {
   try {
     const tokensCollectionRef = collection(db, "usage");
     const newTokenDoc = await addDoc(tokensCollectionRef, tokens);
-    console.log("Documents successfully written!", newTokenDoc.id);
   } catch (error) {
     console.error("Error writing documents: ", error);
   }
@@ -24,7 +23,10 @@ export async function updateFirebaseWithTokens(
     usage: completion.usage,
     timestamp: new Date(),
   };
-  const newTotal = credits - Math.round(completion.usage.total_tokens / 10);
+  const newTotal = credits - Math.round(completion.usage.total_tokens / 40);
+  if (newTotal < 0) {
+    newTotal = 0;
+  }
   setCredits(newTotal);
 
   const userCreditsRef = doc(db, "customers", user.uid, "credits", "total");

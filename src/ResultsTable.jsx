@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./ResultsTable.css";
 import ContextDialog from "./ContextDialog";
 import HowToDialog from "./HowToDialog";
-import logo from "./assets/images/leaf_logo_black.png";
+import logo from "./assets/images/logo_black_text.png";
 import { SelectedIdeaContext } from "./BodyComponent";
 import { UserContext } from "./App";
 import { doc, updateDoc } from "firebase/firestore";
@@ -215,7 +215,7 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
 
       // Add the logo to the PDF
       if (logoBase64) {
-        doc.addImage(logoBase64, "PNG", 10, currentY, 30, 15);
+        doc.addImage(logoBase64, "PNG", 10, currentY, 60, 10);
         currentY += 35; // adjust this to increase the space between the logo and the title
       }
 
@@ -237,9 +237,9 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
         ["Creating the product", product["Creating the product"]],
         ["Finding customers", product["Finding customers"]],
         ["Selling product", product["Selling product"]],
-        ["Consumer Pain Point", product["Consumer Pain Point"]],
-        ["Effort", product["Effort"]],
-        ["Time", product["Time"]],
+        //["Consumer Pain Point", product["Consumer Pain Point"]],
+        //["Effort", product["Effort"]],
+        //["Time", product["Time"]],
       ];
 
       autoTable(doc, {
@@ -271,6 +271,12 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
           "Description",
           "Potential Clients",
           "Where to find the clients",
+          "Creating the product",
+          "Finding customers",
+          "Selling product",
+          //"Consumer Pain Point",
+          //"Effort",
+          //"Time",
         ],
       ];
 
@@ -283,7 +289,7 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
 
       // Add the logo to the PDF
       if (logoBase64) {
-        doc.addImage(logoBase64, "PNG", 10, currentY, 30, 15);
+        doc.addImage(logoBase64, "PNG", 10, currentY, 60, 10);
         currentY += 35; // adjust this to increase the space between the logo and the title
       }
 
@@ -424,7 +430,7 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
                     <div className="AccordionMenuWrapper">
                       <div className="MoreInfoWrapper">
                         <div>{renderHowToDialog(product, index)}</div>
-                        <div>{renderContextDialog(product, index)}</div>
+                        {/*<div>{renderContextDialog(product, index)}</div>*/}
                       </div>
                       <div className="SinglePDFWrapper">
                         <button

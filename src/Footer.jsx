@@ -8,32 +8,25 @@ import privacyPolicy from "./PrivacyPolicy.json";
 function Footer() {
   const currentYear = new Date().getFullYear();
 
-  function getTermsOfService() {
-    alert("TODO: Terms of Service");
-  }
-
-  function getPrivacyPolicy() {
-    alert("TODO: Privacy Policy");
-  }
-
   return (
     <footer className="footer">
       <div className="footer-wrapper">
         <>
           <p className="FooterText">
-            © {currentYear} SPS Digital Tech. All rights reserved.
+            © {currentYear} SPS Digital Tech. All rights reserved. Contact:
+            contact@spsdigitaltech.com
           </p>
           <p className="FooterText">Company CVR number: 42962554</p>
         </>
         <div className="FooterLinksWrapper">
           <InfoDialog
             title="Terms of Service"
-            content={termsAndConditions.TermsAndConditions}
+            data={termsAndConditions}
             buttonType="button-link-footer"
           ></InfoDialog>
           <InfoDialog
             title="Privacy Policy"
-            content={privacyPolicy.PrivacyPolicy}
+            data={privacyPolicy}
             buttonType="button-link-footer"
           ></InfoDialog>
         </div>

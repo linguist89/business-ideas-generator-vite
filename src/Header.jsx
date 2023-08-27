@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Header.css";
 import { UserContext, CreditContext, PricingContext } from "./App";
-import HeaderImage from "./assets/images/leaf_logo.png";
+import HeaderImage from "./assets/images/logo_white_text.png";
 import LoginDialog from "./LoginDialog.jsx";
 import PricingDialog from "./PricingDialog";
 import ProfileDialog from "./ProfileDialog";
