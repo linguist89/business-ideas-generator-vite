@@ -21,7 +21,6 @@ function LoginWithEmailLink() {
     sendSignInLinkToEmail(auth, email, actionCodeSettings)
       .then(() => {
         window.localStorage.setItem("emailForSignIn", email);
-        console.log(email);
         setShowInput(false);
         setEmail("");
         setLinkSent(true);

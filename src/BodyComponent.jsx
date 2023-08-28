@@ -78,7 +78,6 @@ function BodyComponent() {
             );
             setUser(result.user);
             window.localStorage.removeItem("emailForSignIn");
-            alert("You have been successfully logged in!");
           } catch (error) {
             const errorCode = error.code;
             const errorMessage = error.message;
