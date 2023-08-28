@@ -23,7 +23,7 @@ export async function updateFirebaseWithTokens(
     usage: completion.usage,
     timestamp: new Date(),
   };
-  const newTotal = credits - Math.round(completion.usage.total_tokens / 40);
+  let newTotal = credits - Math.round(completion.usage.total_tokens / 40);
   if (newTotal < 0) {
     newTotal = 0;
   }
@@ -32,4 +32,17 @@ export async function updateFirebaseWithTokens(
   const userCreditsRef = doc(db, "customers", user.uid, "credits", "total");
   await setDoc(userCreditsRef, { amount: newTotal }, { merge: true });
   await saveTokensToFirebase(completion_data);
+}
+
+export async function logErrorToFirestore(errorMsg) {
+  try {
+    const logsCollectionRef = collection(db, "error_logs");
+    const newLogDoc = doc(logsCollectionRef);
+    await setDoc(newLogDoc, {
+      message: errorMsg,
+      timestamp: new Date(),
+    });
+  } catch (error) {
+    await logErrorToFirestore(`Failed to write error to Firestore: ${error}`);
+  }
 }

@@ -15,6 +15,10 @@ function ProfileDialog({ open, onClose }) {
     setCredits
   );
 
+  function handleDeleteProfile() {
+    alert("Deleted account");
+  }
+
   React.useEffect(() => {
     if (!user) {
       onClose(false);
@@ -61,6 +65,12 @@ function ProfileDialog({ open, onClose }) {
             )}
           </div>
           <div className="profile-information">
+            <button
+              className="solid-card-button DeleteBackgroundRed"
+              onClick={handleDeleteProfile}
+            >
+              Delete Account
+            </button>
             <button className="solid-card-button" onClick={() => signOut(auth)}>
               Logout
             </button>

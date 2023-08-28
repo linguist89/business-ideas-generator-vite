@@ -11,6 +11,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import PdfIcon from "./assets/images/PdfIcon.svg?component";
 import { CreditContext } from "./App";
+import { logErrorToFirestore } from "./HelperFunctions";
 
 function sanitizeTitle(title) {
   const sanitizedTitle = title.replace(/[^a-zA-Z]/g, "_");
@@ -41,26 +42,16 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
       });
   }, []);
 
-  /*useEffect(() => {
-    console.log(products);
-  }, []);*/
-
   async function handleStartButtonClick(product, index) {
     if (!user) {
       setShowLoginDialog(true);
     } else {
-      console.log("Start Button clicked");
-
       // Check if the product already has the 'starting' information
       if (
-        product["Creating the product"] &&
-        product["Finding customers"] &&
-        product["Selling product"]
+        !product["Creating the product"] &&
+        !product["Finding customers"] &&
+        !product["Selling product"]
       ) {
-        console.log(
-          `${product["Creating the product"]} ${product["Finding customers"]} ${product["Selling product"]}`
-        );
-      } else {
         setStartLoading((prevStartLoading) => ({
           ...prevStartLoading,
           [index]: true,
@@ -70,7 +61,6 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
           const productString = Object.entries(product)
             .map(([key, value]) => `${key}: ${value}`)
             .join("\n");
-          console.log("Before calling getStartingInfo");
           const response = await fetch(
             "https://europe-west3-home-page-authentication.cloudfunctions.net/getStartingInfo",
             {
@@ -83,7 +73,6 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
               }),
             }
           );
-          console.log("After calling getStartingInfo");
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
@@ -108,95 +97,13 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
               i === index ? { ...p, ...startResults } : p
             ),
           });
-
-          // If necessary, handle updating Firebase tokens (like you commented out in handleButtonClick)
-          /*await updateFirebaseWithTokens(
-            startResults,
-            credits,
-            setCredits,
-            user
-          );*/
         } catch (error) {
-          console.error(error);
+          await logErrorToFirestore(`Error getting HowToStart: ${error}`);
         } finally {
           setStartLoading((prevStartLoading) => ({
             ...prevStartLoading,
             [index]: false,
           }));
-        }
-      }
-    }
-  }
-
-  async function handleButtonClick(product, index) {
-    if (!user) {
-      setShowLoginDialog(true);
-    } else {
-      console.log("Context Button clicked");
-      if (
-        product["Consumer Pain Point"] &&
-        product["Effort"] &&
-        product["Time"]
-      ) {
-        console.log(
-          `${product["Consumer Pain Point"]} ${product["Effort"]} ${product["Time"]}`
-        );
-      } else {
-        setLoading((prevLoading) => ({ ...prevLoading, [index]: true }));
-        try {
-          const businessIdeaString = Object.entries(product)
-            .map(([key, value]) => `${key}: ${value}`)
-            .join("\n");
-          const response = await fetch(
-            "https://europe-west3-home-page-authentication.cloudfunctions.net/getContextInfo",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                businessIdeaString: businessIdeaString,
-              }),
-            }
-          );
-          console.log(`HTTP response status: ${response.status}`);
-          console.log(response);
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-
-          const contextResults = await response.json();
-
-          console.log("Raw results:");
-          console.log(contextResults);
-
-          setProducts((prevContexts) => {
-            const newContexts = [...prevContexts];
-            newContexts[index] = {
-              ...newContexts[index],
-              "Consumer Pain Point": contextResults["Consumer Pain Point"],
-              Effort: contextResults["Effort"],
-              Time: contextResults["Time"],
-            };
-            return newContexts;
-          });
-
-          const ideaDoc = doc(db, "customers", user.uid, "ideas", selectedIdea);
-          await updateDoc(ideaDoc, {
-            ideas: products.map((p, i) =>
-              i === index ? { ...p, ...contextResults } : p
-            ),
-          });
-          /*await updateFirebaseWithTokens(
-            contextResults,
-            credits,
-            setCredits,
-            user
-          );*/
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setLoading((prevLoading) => ({ ...prevLoading, [index]: false }));
         }
       }
     }
@@ -237,9 +144,6 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
         ["Creating the product", product["Creating the product"]],
         ["Finding customers", product["Finding customers"]],
         ["Selling product", product["Selling product"]],
-        //["Consumer Pain Point", product["Consumer Pain Point"]],
-        //["Effort", product["Effort"]],
-        //["Time", product["Time"]],
       ];
 
       autoTable(doc, {
@@ -271,12 +175,9 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
           "Description",
           "Potential Clients",
           "Where to find the clients",
-          "Creating the product",
-          "Finding customers",
-          "Selling product",
-          //"Consumer Pain Point",
-          //"Effort",
-          //"Time",
+          //"Creating the product",
+          //"Finding customers",
+          //"Selling product",
         ],
       ];
 
@@ -347,39 +248,6 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
     }
   }
 
-  function renderContextDialog(product, index) {
-    if (
-      product["Consumer Pain Point"].length > 0 &&
-      product["Effort"].length > 0 &&
-      product["Time"].length > 0
-    ) {
-      return (
-        <ContextDialog
-          content={product}
-          title={product["product"]}
-        ></ContextDialog>
-      );
-    } else if (loading[index]) {
-      return <span>Loading...</span>;
-    } else if (ideaContexts[index]) {
-      return (
-        <ContextDialog
-          content={ideaContexts[index]}
-          title={product["product"]}
-        ></ContextDialog>
-      );
-    } else {
-      return (
-        <button
-          onClick={() => handleButtonClick(product, index)}
-          className="transparent-green-button"
-        >
-          Get Offering Optimization
-        </button>
-      );
-    }
-  }
-
   return (
     <div className="ResultsTable">
       <div className="DownloadButtonWrapper">
@@ -430,7 +298,6 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
                     <div className="AccordionMenuWrapper">
                       <div className="MoreInfoWrapper">
                         <div>{renderHowToDialog(product, index)}</div>
-                        {/*<div>{renderContextDialog(product, index)}</div>*/}
                       </div>
                       <div className="SinglePDFWrapper">
                         <button

@@ -2,7 +2,10 @@ import "./BodyComponent.css";
 import "./index.css";
 import CustomTextarea from "./CustomTextarea";
 import React from "react";
-import { updateFirebaseWithTokens } from "./HelperFunctions";
+import {
+  updateFirebaseWithTokens,
+  logErrorToFirestore,
+} from "./HelperFunctions";
 import LandingImage from "./assets/images/lighbulb_shadow.png";
 import ResultsTable from "./ResultsTable";
 import Spinner from "./Spinner";
@@ -27,7 +30,6 @@ import {
 } from "firebase/auth";
 import ConfirmationDelete from "./ConfirmationDelete";
 import InfoDialog from "./InfoDialog";
-import NewsletterDialog from "./NewsletterDialog";
 import howToGuide from "./HowToGuide.json";
 
 export const SelectedIdeaContext = React.createContext();
@@ -132,19 +134,6 @@ function BodyComponent() {
     console.log("TODO: scroll to bottom");
   };
 
-  async function logErrorToFirestore(errorMsg) {
-    try {
-      const logsCollectionRef = collection(db, "error_logs");
-      const newLogDoc = doc(logsCollectionRef);
-      await setDoc(newLogDoc, {
-        message: errorMsg,
-        timestamp: new Date(),
-      });
-    } catch (error) {
-      await logErrorToFirestore(`Failed to write error to Firestore: ${error}`);
-    }
-  }
-
   async function saveIdeasToFirebase(searchData) {
     try {
       const userIdeasRef = collection(db, "customers", user.uid, "ideas");
@@ -155,7 +144,6 @@ function BodyComponent() {
       });
       return newIdeaDoc.id;
     } catch (error) {
-      console.log("Something went wrong when writing documents: ", searchData);
       await logErrorToFirestore(`Error writing documents: ${error}`);
     }
   }
@@ -235,10 +223,7 @@ function BodyComponent() {
           };
         });
       } catch (error) {
-        console.log(
-          "Error in callNetlifyFunction or getContextInfoOpenAITest or getStartingInfoOpenAITest: ",
-          error.message
-        );
+        await logErrorToFirestore(`Error in getBusinessIdeas: ${error}`);
       }
 
       setIdeaResults(parsedResponse);
@@ -283,7 +268,12 @@ function BodyComponent() {
               data={howToGuide}
               buttonType="solid-button"
             ></InfoDialog>
-            <NewsletterDialog></NewsletterDialog>
+            <a
+              className="transparent-button RemoveUnderline"
+              href="https://mailchi.mp/d065db958da3/sps-digital-tech"
+            >
+              Join Newletter
+            </a>
           </div>
         </div>
         <div className="right-section">

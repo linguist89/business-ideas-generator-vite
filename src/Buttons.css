@@ -231,3 +231,7 @@
     cursor: pointer;
     outline: inherit;
   }
+
+  .RemoveUnderline {
+    text-decoration: none;
+  }
