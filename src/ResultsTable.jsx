@@ -281,9 +281,13 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
                   <button
                     className="solid-card-button"
                     onClick={() => {
-                      setSelectedAccordionIndex(
-                        selectedAccordionIndex === index ? null : index
-                      );
+                      if (user) {
+                        setSelectedAccordionIndex(
+                          selectedAccordionIndex === index ? null : index
+                        );
+                      } else {
+                        setShowLoginDialog(true);
+                      }
                     }}
                   >
                     {selectedAccordionIndex === index
