@@ -117,7 +117,8 @@ export default function PricingDialog({
         where("active", "==", true)
       );
       const querySnapshot = await getDocs(productsQuery);
-      const tempProducts = {};
+      const tempProducts = []; // Changed to an array
+
       for (const docSnapshot of querySnapshot.docs) {
         const priceSnap = await getDocs(
           collection(doc(db, "products", docSnapshot.id), "prices")
@@ -129,18 +130,40 @@ export default function PricingDialog({
           docSnapshot._document.data.value.mapValue.fields.metadata.mapValue
             .fields.credits.stringValue;
         if (purchaseType === purchaseTypeFilter) {
-          tempProducts[docSnapshot.id] = docSnapshot.data();
+          const productData = {
+            id: docSnapshot.id,
+            ...docSnapshot.data(),
+          };
           if (!priceSnap.empty) {
             const priceDoc = priceSnap.docs[0];
-            tempProducts[docSnapshot.id].prices = {
+            productData.prices = {
               priceId: priceDoc.id,
               priceData: priceDoc.data(),
             };
           }
+          tempProducts.push(productData);
         }
       }
-      setProducts(tempProducts);
+
+      // Sort tempProducts array by price
+      tempProducts.sort((a, b) => {
+        if (a.prices && b.prices) {
+          return (
+            a.prices.priceData.unit_amount - b.prices.priceData.unit_amount
+          );
+        }
+        return 0; // Return as equal if no prices available for comparison
+      });
+
+      // Convert back to object if needed
+      const sortedProducts = {};
+      tempProducts.forEach((product) => {
+        sortedProducts[product.id] = product;
+      });
+
+      setProducts(sortedProducts);
     };
+
     fetchProducts();
   }, []);
 
