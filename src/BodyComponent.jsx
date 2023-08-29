@@ -271,7 +271,7 @@ function BodyComponent() {
               className="transparent-button RemoveUnderline"
               href="https://mailchi.mp/d065db958da3/sps-digital-tech"
             >
-              Join Newletter
+              Join Newsletter
             </a>
           </div>
         </div>
