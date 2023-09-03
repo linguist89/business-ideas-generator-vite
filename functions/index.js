@@ -377,28 +377,11 @@ exports.getBusinessIdeas = functions.region("europe-west3")
         const {focus, trends, cv} = req.body;
 
         const question =
-        "Give me a random topic word then use" +
-        "that word as the basis for the following: " +
-        "I'm looking to start a business and" +
-        "I need product or service ideas based on my cover letter. " +
-        "I have provided a focus" +
-        "(that which I want as my main purpose in the business)," +
-        "trends (the current " +
-        "business landscape where I live) and cover letter" +
-        "(the skills and competencies that I bring to the table). " +
-        "Give me product ideas, potential clients and" +
-        "where to find these clients based on these factors.";
+        "First, select a random topic word. Now, with this word as a foundation, help me brainstorm a business opportunity. To ensure it aligns with my strengths and the current market conditions, consider the following: Focus: My core intention for this business. What do I passionately want to achieve? Trends: Insights into the prevailing market trends in my region, shedding light on demand and competition. Cover Letter: A detailed overview of my skills, competencies, and experiences that I bring to this venture. Based on this, provide tailored product or service ideas that will differentiate my business. Give me product ideas, potential clients and where to find these clients based on these factors.";
 
         const outputInstructions =
-        "Give me 10 items and the output should" +
-        "be in the following JSON format: " +
-        "[{\"product\": \"product name\", \"description\":" +
-        "\"product description\", \"potentialClients\": " +
-        "\" at least 5 potential clients\", \"whereToFindClients\":" +
-        "\" 5 places where to find clients\"}, ...]. " +
-        "Do not number the items. NOTHING ELSE";
-
-        const fullPrompt = `${question}\nFocus:` +
+        "Choose a random industry. Based on the above focus, type and cover letter, suggest 10 unique, thinking-outside-the-box business ideas all within the same overall industry. Present them in this JSON format: [{\"product\": \"product name\", \"description\": \"detailed and specific product description\", \"potentialClients\": \"5 potential clients\", \"whereToFindClients\": \"5 places to find clients\"}]";
+        const fullPrompt = `\nFocus:` +
         `${focus}\nType: ${trends}\nCover Letter: ${cv}\n${outputInstructions}`;
 
         let attempts = 0;
@@ -414,6 +397,8 @@ exports.getBusinessIdeas = functions.region("europe-west3")
             });
 
             res.status(200).send(completion.data);
+            functions.logger.log("completion", completion);
+            functions.logger.log("completion.data: ", completion.data);
             return;
           } catch (error) {
             console.error(`Attempt ${attempts + 1} failed. Error: ${error}`);

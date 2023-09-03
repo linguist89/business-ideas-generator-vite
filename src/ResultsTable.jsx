@@ -12,6 +12,7 @@ import autoTable from "jspdf-autotable";
 import PdfIcon from "./assets/images/PdfIcon.svg?component";
 import { CreditContext } from "./App";
 import { logErrorToFirestore } from "./HelperFunctions";
+import { delay } from "./HelperFunctions";
 
 function sanitizeTitle(title) {
   const sanitizedTitle = title.replace(/[^a-zA-Z]/g, "_");
@@ -57,53 +58,75 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
           [index]: true,
         }));
 
-        try {
-          const productString = Object.entries(product)
-            .map(([key, value]) => `${key}: ${value}`)
-            .join("\n");
-          const response = await fetch(
-            "https://europe-west3-home-page-authentication.cloudfunctions.net/getStartingInfo",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                productString: productString,
-              }),
+        const maxRetries = 3; // max number of retries
+        let retries = 0;
+        let success = false;
+        while (retries < maxRetries && !success) {
+          try {
+            const productString = Object.entries(product)
+              .map(([key, value]) => `${key}: ${value}`)
+              .join("\n");
+            const response = await fetch(
+              "https://europe-west3-home-page-authentication.cloudfunctions.net/getStartingInfo",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  productString: productString,
+                }),
+              }
+            );
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
             }
-          );
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+
+            const startResults = await response.json();
+
+            // Update local state
+            setProducts((prevStarts) => {
+              const newStarts = [...prevStarts];
+              newStarts[index] = {
+                ...newStarts[index],
+                "Creating the product": startResults["Creating the product"],
+                "Finding customers": startResults["Finding customers"],
+                "Selling product": startResults["Selling product"],
+              };
+              return newStarts;
+            });
+
+            const ideaDoc = doc(
+              db,
+              "customers",
+              user.uid,
+              "ideas",
+              selectedIdea
+            );
+            await updateDoc(ideaDoc, {
+              ideas: products.map((p, i) =>
+                i === index ? { ...p, ...startResults } : p
+              ),
+            });
+
+            success = true; // If everything passes, set success to true to break out of the loop
+          } catch (error) {
+            retries++;
+            console.log(
+              "TODO: See if the delay fixes the cold start problem - from ResultsTable"
+            );
+            if (retries < maxRetries) {
+              await delay(1000); // add a delay of 1 second before the next retry
+            }
+            if (retries >= maxRetries) {
+              await logErrorToFirestore(`Error getting HowToStart: ${error}`);
+            }
+          } finally {
+            setStartLoading((prevStartLoading) => ({
+              ...prevStartLoading,
+              [index]: false,
+            }));
           }
-
-          const startResults = await response.json();
-
-          // Update local state
-          setProducts((prevStarts) => {
-            const newStarts = [...prevStarts];
-            newStarts[index] = {
-              ...newStarts[index],
-              "Creating the product": startResults["Creating the product"],
-              "Finding customers": startResults["Finding customers"],
-              "Selling product": startResults["Selling product"],
-            };
-            return newStarts;
-          });
-
-          const ideaDoc = doc(db, "customers", user.uid, "ideas", selectedIdea);
-          await updateDoc(ideaDoc, {
-            ideas: products.map((p, i) =>
-              i === index ? { ...p, ...startResults } : p
-            ),
-          });
-        } catch (error) {
-          await logErrorToFirestore(`Error getting HowToStart: ${error}`);
-        } finally {
-          setStartLoading((prevStartLoading) => ({
-            ...prevStartLoading,
-            [index]: false,
-          }));
         }
       }
     }

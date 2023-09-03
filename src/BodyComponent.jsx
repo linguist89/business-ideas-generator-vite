@@ -31,6 +31,7 @@ import {
 import ConfirmationDelete from "./ConfirmationDelete";
 import InfoDialog from "./InfoDialog";
 import howToGuide from "./HowToGuide.json";
+import { delay } from "./HelperFunctions";
 
 export const SelectedIdeaContext = React.createContext();
 
@@ -156,6 +157,7 @@ function BodyComponent() {
   }
 
   async function getBusinessIdeas(focus, trends, cv) {
+    console.log("Getting business ideas");
     try {
       const response = await fetch(
         "https://europe-west3-home-page-authentication.cloudfunctions.net/getBusinessIdeas",
@@ -167,7 +169,7 @@ function BodyComponent() {
           body: JSON.stringify({ focus, trends, cv }),
         }
       );
-
+      console.log("Getting business ideas response", response);
       if (!response.ok) {
         setIdeasLoading(false);
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -201,6 +203,7 @@ function BodyComponent() {
 
       let results;
       let parsedResponse;
+
       try {
         results = await getBusinessIdeas(
           checkedFocus,
@@ -221,8 +224,12 @@ function BodyComponent() {
             "Selling product": "",
           };
         });
+        console.log("parsedResponse", parsedResponse);
+        success = true; // set the flag to true if the function call is successful
       } catch (error) {
-        await logErrorToFirestore(`Error in getBusinessIdeas: ${error}`);
+        console.log(
+          "TODO: See if the delay fixes the cold start problem - from BodyComponent"
+        );
       }
 
       setIdeaResults(parsedResponse);

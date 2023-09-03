@@ -1,6 +1,9 @@
 import { db } from "./Firebase.jsx";
 import { doc, setDoc, collection, addDoc } from "firebase/firestore";
 
+// Delay function to wait for the API to return the results
+export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 /* Save to Firebase the token usage details */
 async function saveTokensToFirebase(tokens) {
   try {
