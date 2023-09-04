@@ -99,6 +99,9 @@ function ResultsTable({ products, setProducts, title, setShowLoginDialog }) {
             ),
           });
         } catch (error) {
+          await logErrorToFirestore(
+            `Failed to get starting info: ${error} ${response}`
+          );
           console.log(
             "TODO: See if the delay fixes the cold start problem - from ResultsTable"
           );

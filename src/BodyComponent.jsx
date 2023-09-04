@@ -144,7 +144,9 @@ function BodyComponent() {
       });
       return newIdeaDoc.id;
     } catch (error) {
-      await logErrorToFirestore(`Error writing documents: ${error}`);
+      await logErrorToFirestore(
+        `Error writing documents: ${error} ${searchData}`
+      );
     }
   }
 
@@ -193,9 +195,9 @@ function BodyComponent() {
         return;
       }
 
-      scrollToBottom();
       setIdeasLoading(true);
       setIdeaResults([]);
+      scrollToBottom();
 
       let checkedFocus = focus ? focus : "Random product or service";
       let checkedTrends = trends ? trends : "Any customer";
