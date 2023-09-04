@@ -39,13 +39,14 @@
   
   @media (max-width: 768px) {
     .FooterLinksWrapper {
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
       gap: 0.5rem;
     }
 
     .footer-wrapper {
       height: 15vh;
+      font-size: 0.5rem;
     }
   }
   

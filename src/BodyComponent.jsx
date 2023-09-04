@@ -228,7 +228,7 @@ function BodyComponent() {
         success = true; // set the flag to true if the function call is successful
       } catch (error) {
         console.log(
-          "TODO: See if the delay fixes the cold start problem - from BodyComponent"
+          "TODO: See if the delay fixes the cold start problem - from BodyComponent. I changed the min instances to 1 and max instance to 3000 for the cloud functions, let's see if that fixes the cold start problem. I also need to see how that affects the billing."
         );
       }
 
