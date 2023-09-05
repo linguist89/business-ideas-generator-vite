@@ -16,7 +16,8 @@ const app = express();
 // Firestore backup
 const backup = require("./backup");
 
-const MODEL = "gpt-3.5-turbo";
+const MODEL = "gpt-3.5-turbo-16k-0613";
+// const MODEL = "gpt-3.5-turbo";
 // const MODEL = "gpt-4";
 // runs every midnight
 exports.dbBackup = functions

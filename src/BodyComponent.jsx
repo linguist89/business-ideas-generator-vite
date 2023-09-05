@@ -145,7 +145,7 @@ function BodyComponent() {
       return newIdeaDoc.id;
     } catch (error) {
       await logErrorToFirestore(
-        `Error writing documents: ${error} ${searchData}`
+        `Error writing documents: ${error} ${JSON.stringify(searchData)}`
       );
     }
   }
@@ -199,7 +199,7 @@ function BodyComponent() {
       setIdeaResults([]);
       scrollToBottom();
 
-      let checkedFocus = focus ? focus : "Random product or service";
+      let checkedFocus = focus ? focus : "A single Random product or service";
       let checkedTrends = trends ? trends : "Any customer";
       let checkedCv = cv ? cv : "Various skills";
 
